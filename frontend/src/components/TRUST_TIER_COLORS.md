@@ -155,7 +155,7 @@ If you want to use CSS variables for theming:
 
 ## Design System Integration
 
-These colors are part of the Flight School Marketplace design system. When adding new trust tiers or modifying colors:
+These colors are part of the Find A Flight School design system. When adding new trust tiers or modifying colors:
 
 1. **Test contrast ratio** using WebAIM or similar tool
 2. **Verify WCAG AA compliance** (4.5:1 minimum)

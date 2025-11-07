@@ -3,6 +3,7 @@ import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { ComparisonProvider } from './context/ComparisonContext';
 import { CompareBar } from './components/CompareBar';
 import { Navigation } from './components/Navigation';
+import { HomePage } from './pages/HomePage';
 import { SchoolDirectory } from './pages/SchoolDirectory';
 import { ComparisonPage } from './pages/ComparisonPage';
 import { SchoolProfilePage } from './pages/SchoolProfilePage';
@@ -29,7 +30,7 @@ function App() {
         <ComparisonProvider>
           <Navigation />
           <Routes>
-            <Route path="/" element={<SchoolDirectory />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/schools" element={<SchoolDirectory />} />
             <Route path="/compare" element={<ComparisonPage />} />
             <Route path="/schools/:schoolId" element={<SchoolProfilePage />} />

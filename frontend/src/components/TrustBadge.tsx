@@ -90,10 +90,14 @@ export const TrustBadge: React.FC<TrustBadgeProps> = ({
     },
   };
 
+  // Get the icon component
+  const IconComponent = config.icon;
+
   // Create the badge element
   const badge = (
     <Chip
-      label={`${config.icon} ${config.label}`}
+      icon={<IconComponent sx={{ fontSize: 'inherit', color: `${config.textColor} !important` }} />}
+      label={config.label}
       onClick={onClick}
       className={className}
       sx={{
@@ -104,6 +108,10 @@ export const TrustBadge: React.FC<TrustBadgeProps> = ({
         transition: 'all 0.2s ease-in-out',
         border: 'none',
         ...sizeStyles[size],
+        '& .MuiChip-icon': {
+          marginLeft: '8px',
+          marginRight: '-4px',
+        },
         '&:hover': onClick
           ? {
               transform: 'scale(1.05)',

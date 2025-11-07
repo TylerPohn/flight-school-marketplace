@@ -90,6 +90,26 @@ export function StepThree({ form }: StepThreeProps) {
           Popular locations:
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+          {/* Open to Relocating Option */}
+          <Typography
+            variant="caption"
+            sx={{
+              px: 1.5,
+              py: 0.5,
+              bgcolor: 'secondary.50',
+              borderRadius: 1,
+              cursor: 'pointer',
+              display: 'inline-block',
+              fontWeight: 600,
+              '&:hover': { bgcolor: 'secondary.100' },
+            }}
+            onClick={() => {
+              setValue('location', { city: 'Open to relocating', state: '' });
+              setValue('searchRadius', 500);
+            }}
+          >
+            Open to relocating
+          </Typography>
           {Object.keys(CITY_COORDINATES).slice(0, 6).map((city) => (
             <Typography
               key={city}

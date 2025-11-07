@@ -200,15 +200,16 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
                           alignItems: 'center',
                           justifyContent: 'center',
                           height: '100%',
-                          bgcolor: 'grey.50',
+                          bgcolor: 'rgba(255, 255, 255, 0.05)',
                           borderRadius: 2,
                           p: 2,
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
                         }}
                       >
-                        <Typography variant="h2" fontWeight="bold" color={getScoreColor(matchScore)}>
+                        <Typography variant="h2" fontWeight="bold" sx={{ color: getScoreColor(matchScore) }}>
                           {matchScore}%
                         </Typography>
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
+                        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} gutterBottom>
                           Match Score
                         </Typography>
 
@@ -219,7 +220,7 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
                             sx={{
                               height: 8,
                               borderRadius: 4,
-                              bgcolor: 'grey.300',
+                              bgcolor: 'rgba(255, 255, 255, 0.2)',
                               '& .MuiLinearProgress-bar': {
                                 bgcolor: getScoreColor(matchScore),
                               },
@@ -229,7 +230,7 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
 
                         {/* Key Strengths */}
                         <Box sx={{ mt: 3, width: '100%' }}>
-                          <Typography variant="caption" color="text.secondary" gutterBottom display="block">
+                          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} gutterBottom display="block">
                             Key Strengths:
                           </Typography>
                           {school.preferences.slice(0, 3).map((pref, i) => (

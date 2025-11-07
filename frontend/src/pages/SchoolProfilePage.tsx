@@ -103,7 +103,7 @@ export function SchoolProfilePage() {
         </Container>
       </Box>
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Container maxWidth="lg" sx={{ py: 4, pb: { xs: 12, sm: 14, md: 16 } }}>
         {/* Breadcrumb */}
         <Button
           startIcon={<ArrowBack />}

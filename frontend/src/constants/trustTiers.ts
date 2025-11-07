@@ -5,6 +5,13 @@
  * All colors meet WCAG AA contrast requirements for accessibility.
  */
 
+import type { ComponentType } from 'react';
+import {
+  WorkspacePremium,
+  VerifiedUser,
+  Handshake,
+  WarningAmber,
+} from '@mui/icons-material';
 import { TrustTier, type FSPSignals } from '../types/trustTier';
 
 /**
@@ -13,7 +20,7 @@ import { TrustTier, type FSPSignals } from '../types/trustTier';
 export interface TierConfig {
   color: string;
   textColor: string;
-  icon: string;
+  icon: ComponentType;
   label: string;
   description: string;
   showSignals: boolean;
@@ -33,7 +40,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
   [TrustTier.PREMIER]: {
     color: '#FFD700',
     textColor: '#333333',
-    icon: '🥇',
+    icon: WorkspacePremium,
     label: 'Premier',
     description: 'Fully verified school with excellent safety and completion records',
     showSignals: true,
@@ -41,7 +48,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
   [TrustTier.VERIFIED_FSP]: {
     color: '#4CAF50',
     textColor: '#FFFFFF',
-    icon: '✅',
+    icon: VerifiedUser,
     label: 'Verified FSP',
     description: 'Verified Flight School Partner with solid performance metrics',
     showSignals: true,
@@ -49,7 +56,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
   [TrustTier.COMMUNITY_VERIFIED]: {
     color: '#2196F3',
     textColor: '#FFFFFF',
-    icon: '🤝',
+    icon: Handshake,
     label: 'Community-Verified',
     description: 'Verified by community reviews and feedback',
     showSignals: true,
@@ -57,7 +64,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
   [TrustTier.UNVERIFIED]: {
     color: '#9E9E9E',
     textColor: '#FFFFFF',
-    icon: '⚠️',
+    icon: WarningAmber,
     label: 'Unverified',
     description: 'School verification data not yet available',
     showSignals: false,

@@ -8,11 +8,13 @@ import {
   Checkbox,
   FormControlLabel,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import type { School } from '../types/school';
 import { useComparison } from '../hooks/useComparison';
 
 interface SchoolCardProps {
   school: School;
+  gradientIndex?: number;
 }
 
 const trustTierColors: Record<string, 'success' | 'primary' | 'default' | 'warning'> = {
@@ -29,12 +31,36 @@ const trustTierLabels: Record<string, string> = {
   Unverified: 'Unverified',
 };
 
-export const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
+export const SchoolCard: React.FC<SchoolCardProps> = ({ school, gradientIndex = 0 }) => {
+  const navigate = useNavigate();
   const { addSchool, removeSchool, isSchoolSelected, count, maxCount } = useComparison();
   const isSelected = isSchoolSelected(school.id);
   const isDisabled = count >= maxCount && !isSelected;
 
+  // Create unique gradients for each card
+  const gradients = [
+    'linear-gradient(135deg, rgba(30, 60, 114, 0.3) 0%, rgba(42, 82, 152, 0.2) 100%)', // Blue
+    'linear-gradient(135deg, rgba(46, 125, 50, 0.3) 0%, rgba(76, 175, 80, 0.2) 100%)', // Green
+    'linear-gradient(135deg, rgba(123, 31, 162, 0.3) 0%, rgba(156, 39, 176, 0.2) 100%)', // Purple
+    'linear-gradient(135deg, rgba(216, 67, 21, 0.3) 0%, rgba(255, 87, 34, 0.2) 100%)', // Orange
+    'linear-gradient(135deg, rgba(0, 96, 100, 0.3) 0%, rgba(0, 150, 136, 0.2) 100%)', // Teal
+    'linear-gradient(135deg, rgba(194, 24, 91, 0.3) 0%, rgba(233, 30, 99, 0.2) 100%)', // Pink
+  ];
+
+  const hoverGradients = [
+    'linear-gradient(135deg, rgba(30, 60, 114, 0.4) 0%, rgba(42, 82, 152, 0.3) 100%)',
+    'linear-gradient(135deg, rgba(46, 125, 50, 0.4) 0%, rgba(76, 175, 80, 0.3) 100%)',
+    'linear-gradient(135deg, rgba(123, 31, 162, 0.4) 0%, rgba(156, 39, 176, 0.3) 100%)',
+    'linear-gradient(135deg, rgba(216, 67, 21, 0.4) 0%, rgba(255, 87, 34, 0.3) 100%)',
+    'linear-gradient(135deg, rgba(0, 96, 100, 0.4) 0%, rgba(0, 150, 136, 0.3) 100%)',
+    'linear-gradient(135deg, rgba(194, 24, 91, 0.4) 0%, rgba(233, 30, 99, 0.3) 100%)',
+  ];
+
+  const gradient = gradients[gradientIndex % gradients.length];
+  const hoverGradient = hoverGradients[gradientIndex % hoverGradients.length];
+
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.stopPropagation();
     if (event.target.checked) {
       addSchool(school.id);
     } else {
@@ -42,8 +68,13 @@ export const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/schools/${school.id}`);
+  };
+
   return (
     <Card
+      onClick={handleCardClick}
       sx={{
         height: '100%',
         display: 'flex',
@@ -51,10 +82,15 @@ export const SchoolCard: React.FC<SchoolCardProps> = ({ school }) => {
         position: 'relative',
         border: isSelected ? 2 : 1,
         borderColor: isSelected ? 'primary.main' : 'divider',
-        transition: 'all 0.2s',
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: 'pointer',
+        background: gradient,
+        backdropFilter: 'blur(10px)',
         '&:hover': {
-          boxShadow: 4,
-          transform: 'translateY(-4px)',
+          boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
+          transform: 'translateY(-8px)',
+          background: hoverGradient,
+          borderColor: isSelected ? 'primary.light' : 'rgba(255, 255, 255, 0.2)',
         },
       }}
     >

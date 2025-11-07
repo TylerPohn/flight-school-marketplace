@@ -13,8 +13,10 @@ import {
   Chip,
   Alert,
   Button,
+  Snackbar,
 } from '@mui/material';
-import { useSearchParams, Link as RouterLink } from 'react-router-dom';
+import { CompareArrows } from '@mui/icons-material';
+import { useSearchParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import type { School, TrustTier } from '../types/school';
 import { getSchoolsByIds } from '../mock/schools';
 
@@ -47,20 +49,30 @@ interface ComparisonRow {
 
 export const ComparisonPage: React.FC = () => {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [schools, setSchools] = useState<School[]>([]);
   const [error, setError] = useState<string>('');
+  const [showNotification, setShowNotification] = useState(false);
 
   useEffect(() => {
     const schoolsParam = searchParams.get('schools');
     if (!schoolsParam) {
-      setError('No schools selected for comparison. Please select at least 2 schools.');
+      // Redirect to schools page and show notification
+      setShowNotification(true);
+      setTimeout(() => {
+        navigate('/schools');
+      }, 100);
       return;
     }
 
     const schoolIds = schoolsParam.split(',').filter(Boolean);
-    
+
     if (schoolIds.length < 2) {
-      setError('Please select at least 2 schools to compare.');
+      // Redirect to schools page and show notification
+      setShowNotification(true);
+      setTimeout(() => {
+        navigate('/schools');
+      }, 100);
       return;
     }
 
@@ -83,8 +95,8 @@ export const ComparisonPage: React.FC = () => {
   }, [searchParams]);
 
   const getBestValueStyle = (index: number, bestIndex: number) => ({
-    backgroundColor: index === bestIndex ? '#E8F5E9' : 'transparent',
-    color: index === bestIndex ? '#1B5E20' : 'inherit',
+    backgroundColor: index === bestIndex ? 'rgba(76, 175, 80, 0.15)' : 'transparent',
+    color: index === bestIndex ? '#81c784' : 'inherit',
     fontWeight: index === bestIndex ? 600 : 'normal',
   });
 
@@ -212,50 +224,215 @@ export const ComparisonPage: React.FC = () => {
 
   if (error && schools.length === 0) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-        <Button component={RouterLink} to="/" variant="contained">
-          Return to Directory
-        </Button>
-      </Container>
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #1a1f2e 0%, #252d3d 50%, #2f3947 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 4,
+        }}
+      >
+        <Container maxWidth="sm">
+          <Alert
+            severity="error"
+            sx={{
+              mb: 2,
+              background: 'rgba(244, 67, 54, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(244, 67, 54, 0.3)',
+              color: '#fff',
+              '& .MuiAlert-icon': {
+                color: '#ef5350',
+              },
+            }}
+          >
+            {error}
+          </Alert>
+          <Button
+            component={RouterLink}
+            to="/"
+            variant="contained"
+            fullWidth
+            sx={{
+              py: 1.5,
+              background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
+              '&:hover': {
+                background: 'linear-gradient(135deg, #42a5f5 0%, #1e88e5 100%)',
+              },
+            }}
+          >
+            Return to Directory
+          </Button>
+        </Container>
+      </Box>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4, pb: 12 }}>
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          School Comparison
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Comparing {schools.length} school{schools.length !== 1 ? 's' : ''}
-        </Typography>
-        {error && (
-          <Alert severity="warning" sx={{ mt: 2 }}>
-            {error}
-          </Alert>
-        )}
-      </Box>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #1a1f2e 0%, #252d3d 50%, #2f3947 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 40%, rgba(100, 110, 130, 0.06) 0%, transparent 50%), radial-gradient(circle at 80% 60%, rgba(80, 95, 115, 0.06) 0%, transparent 50%)',
+          pointerEvents: 'none',
+        },
+      }}
+    >
+      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, pb: { xs: 8, sm: 10, md: 12 }, position: 'relative', zIndex: 1 }}>
+        <Box
+          sx={{
+            mb: 4,
+            textAlign: 'center',
+            animation: 'fadeInDown 0.8s ease-out',
+            '@keyframes fadeInDown': {
+              '0%': { opacity: 0, transform: 'translateY(-30px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}
+        >
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mb: 2,
+              p: 2,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            <CompareArrows
+              sx={{
+                fontSize: { xs: 40, sm: 48, md: 56 },
+                color: '#fff',
+                filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))',
+              }}
+            />
+          </Box>
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #fff 0%, #e3f2fd 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 2,
+              textShadow: '0 0 30px rgba(227, 242, 253, 0.2)',
+              letterSpacing: '-0.5px',
+              fontSize: { xs: '1.75rem', sm: '2.125rem', md: '2.5rem' },
+            }}
+          >
+            School Comparison
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.85)',
+              fontSize: { xs: '1rem', sm: '1.1rem' },
+            }}
+          >
+            Comparing {schools.length} school{schools.length !== 1 ? 's' : ''}
+          </Typography>
+          {error && (
+            <Alert
+              severity="warning"
+              sx={{
+                mt: 2,
+                background: 'rgba(255, 152, 0, 0.1)',
+                backdropFilter: 'blur(10px)',
+                border: '1px solid rgba(255, 152, 0, 0.3)',
+                color: '#fff',
+                '& .MuiAlert-icon': {
+                  color: '#ffb74d',
+                },
+              }}
+            >
+              {error}
+            </Alert>
+          )}
+        </Box>
 
-      <TableContainer component={Paper} elevation={2}>
+        <TableContainer
+          component={Paper}
+          elevation={0}
+          sx={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: { xs: '12px', sm: '16px' },
+            animation: 'fadeInUp 0.8s ease-out 0.2s both',
+            '@keyframes fadeInUp': {
+              '0%': { opacity: 0, transform: 'translateY(30px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}
+        >
         <Table sx={{ minWidth: 650 }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: 'primary.main' }}>
-              <TableCell sx={{ fontWeight: 'bold', color: 'white', minWidth: 200 }}>
+            <TableRow
+              sx={{
+                background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+              }}
+            >
+              <TableCell
+                sx={{
+                  fontWeight: 'bold',
+                  color: 'white',
+                  minWidth: 200,
+                  fontSize: '1rem',
+                }}
+              >
                 Metric
               </TableCell>
               {schools.map(school => (
                 <TableCell
                   key={school.id}
                   align="center"
-                  sx={{ fontWeight: 'bold', color: 'white', minWidth: 180 }}
+                  sx={{
+                    fontWeight: 'bold',
+                    color: 'white',
+                    minWidth: 180,
+                    p: 1,
+                  }}
                 >
                   <Button
                     component={RouterLink}
                     to={`/schools/${school.id}`}
-                    sx={{ color: 'white', textDecoration: 'underline', textTransform: 'none' }}
+                    sx={{
+                      color: 'white',
+                      textDecoration: 'none',
+                      textTransform: 'none',
+                      fontWeight: 700,
+                      px: 2,
+                      py: 1,
+                      borderRadius: '8px',
+                      transition: 'all 0.2s ease',
+                      cursor: 'pointer',
+                      border: '1px solid transparent',
+                      '&:hover': {
+                        color: 'white',
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        transform: 'scale(1.02)',
+                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+                      },
+                    }}
                   >
                     {school.name}
                   </Button>
@@ -269,20 +446,41 @@ export const ComparisonPage: React.FC = () => {
               return (
                 <TableRow
                   key={rowIndex}
-                  sx={{ '&:nth-of-type(odd)': { backgroundColor: 'action.hover' } }}
+                  sx={{
+                    '&:nth-of-type(odd)': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.02)',
+                    },
+                    '&:hover': {
+                      backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                    },
+                  }}
                 >
-                  <TableCell component="th" scope="row" sx={{ fontWeight: 'bold' }}>
+                  <TableCell
+                    component="th"
+                    scope="row"
+                    sx={{
+                      fontWeight: 'bold',
+                      color: 'rgba(255, 255, 255, 0.9)',
+                    }}
+                  >
                     {row.label}
                   </TableCell>
-                  {schools.map((school, schoolIndex) => (
-                    <TableCell
-                      key={school.id}
-                      align="center"
-                      sx={getBestValueStyle(schoolIndex, bestIndex)}
-                    >
-                      {row.getValue(school)}
-                    </TableCell>
-                  ))}
+                  {schools.map((school, schoolIndex) => {
+                    const isHighlighted = schoolIndex === bestIndex && bestIndex !== -1;
+                    return (
+                      <TableCell
+                        key={school.id}
+                        align="center"
+                        sx={{
+                          backgroundColor: isHighlighted ? 'rgba(76, 175, 80, 0.15)' : 'transparent',
+                          color: isHighlighted ? '#81c784' : 'rgba(255, 255, 255, 0.85)',
+                          fontWeight: isHighlighted ? 600 : 'normal',
+                        }}
+                      >
+                        {row.getValue(school)}
+                      </TableCell>
+                    );
+                  })}
                 </TableRow>
               );
             })}
@@ -291,10 +489,56 @@ export const ComparisonPage: React.FC = () => {
       </TableContainer>
 
       <Box sx={{ mt: 3 }}>
-        <Button component={RouterLink} to="/" variant="outlined">
+        <Button
+          component={RouterLink}
+          to="/"
+          variant="outlined"
+          sx={{
+            px: 4,
+            py: 1.5,
+            borderRadius: '12px',
+            borderColor: 'rgba(255, 255, 255, 0.3)',
+            color: '#fff',
+            fontWeight: 600,
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            backdropFilter: 'blur(10px)',
+            background: 'rgba(255, 255, 255, 0.05)',
+            '&:hover': {
+              borderColor: 'rgba(255, 255, 255, 0.5)',
+              background: 'rgba(255, 255, 255, 0.1)',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+            },
+          }}
+        >
           Back to Directory
         </Button>
       </Box>
-    </Container>
+      </Container>
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={showNotification}
+        autoHideDuration={4000}
+        onClose={() => setShowNotification(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={() => setShowNotification(false)}
+          severity="info"
+          sx={{
+            background: 'rgba(33, 150, 243, 0.95)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            color: '#fff',
+            '& .MuiAlert-icon': {
+              color: '#fff',
+            },
+          }}
+        >
+          Please select at least 2 schools to compare. Use the checkboxes on school cards.
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 };

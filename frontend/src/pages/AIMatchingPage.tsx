@@ -10,6 +10,7 @@ import {
   StepLabel,
   Typography,
 } from '@mui/material';
+import { TrackChanges, AttachMoney, LocationOn, Star } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -31,10 +32,10 @@ import { StepFour } from '../components/matching/StepFour';
 import { MatchResults } from '../components/matching/MatchResults';
 
 const steps = [
-  { label: 'Goals', icon: '🎯' },
-  { label: 'Budget', icon: '💰' },
-  { label: 'Location', icon: '📍' },
-  { label: 'Preferences', icon: '⭐' },
+  { label: 'Goals', icon: TrackChanges },
+  { label: 'Budget', icon: AttachMoney },
+  { label: 'Location', icon: LocationOn },
+  { label: 'Preferences', icon: Star },
 ];
 
 export function AIMatchingPage() {
@@ -177,75 +178,374 @@ export function AIMatchingPage() {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      {/* Header */}
-      <Box sx={{ textAlign: 'center', mb: 4 }}>
-        <Typography variant="h3" fontWeight="bold" gutterBottom>
-          Find Your Perfect Flight School
-        </Typography>
-        <Typography variant="body1" color="text.secondary">
-          Answer a few questions and we'll match you with the best schools for your goals
-        </Typography>
-      </Box>
-
-      {/* Stepper */}
-      <Paper elevation={3} sx={{ p: 3, mb: 4 }}>
-        <Stepper activeStep={currentStep} alternativeLabel>
-          {steps.map((step) => (
-            <Step key={step.label}>
-              <StepLabel>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                  <Typography variant="h6">{step.icon}</Typography>
-                  <Typography variant="caption">{step.label}</Typography>
-                </Box>
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-
-        {/* Progress */}
-        <Box sx={{ mt: 2, textAlign: 'center' }}>
-          <Typography variant="body2" color="text.secondary">
-            Step {currentStep + 1} of {steps.length}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+        position: 'relative',
+        overflow: 'hidden',
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'radial-gradient(circle at 20% 50%, rgba(33, 150, 243, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(156, 39, 176, 0.1) 0%, transparent 50%)',
+          pointerEvents: 'none',
+        },
+      }}
+    >
+      <Container maxWidth="md" sx={{ py: { xs: 3, sm: 4, md: 6 }, pb: { xs: 12, sm: 14, md: 16 }, px: { xs: 2, sm: 3 }, position: 'relative', zIndex: 1 }}>
+        {/* Header */}
+        <Box
+          sx={{
+            textAlign: 'center',
+            mb: { xs: 3, sm: 4, md: 5 },
+            animation: 'fadeInDown 0.8s ease-out',
+            '@keyframes fadeInDown': {
+              '0%': { opacity: 0, transform: 'translateY(-30px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}
+        >
+          <Typography
+            variant="h3"
+            sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #fff 0%, #64b5f6 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              mb: 2,
+              textShadow: '0 0 30px rgba(100, 181, 246, 0.3)',
+              letterSpacing: '-0.5px',
+              fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+            }}
+          >
+            Find Your Perfect Flight School
+          </Typography>
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.8)',
+              fontSize: { xs: '0.95rem', sm: '1rem', md: '1.1rem' },
+              maxWidth: '600px',
+              mx: 'auto',
+              px: { xs: 2, sm: 0 },
+            }}
+          >
+            Answer a few questions and we'll match you with the best schools for your goals
           </Typography>
         </Box>
-      </Paper>
 
-      {/* Form Content */}
-      <Paper elevation={3} sx={{ p: 4, mb: 4 }}>
-        {getCurrentForm()}
-      </Paper>
-
-      {/* Navigation Buttons */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          variant="outlined"
-          onClick={handleBack}
-          disabled={currentStep === 0}
-          size="large"
+        {/* Stepper */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 2, sm: 3, md: 4 },
+            mb: { xs: 3, sm: 4 },
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: { xs: '16px', sm: '20px', md: '24px' },
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            animation: 'fadeInUp 0.8s ease-out 0.2s both',
+            '@keyframes fadeInUp': {
+              '0%': { opacity: 0, transform: 'translateY(30px)' },
+              '100%': { opacity: 1, transform: 'translateY(0)' },
+            },
+          }}
         >
-          Back
-        </Button>
+          <Stepper
+            activeStep={currentStep}
+            alternativeLabel
+            sx={{
+              '& .MuiStepLabel-root .Mui-completed': {
+                color: '#4caf50',
+              },
+              '& .MuiStepLabel-root .Mui-active': {
+                color: '#2196f3',
+              },
+              '& .MuiStepConnector-line': {
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+              },
+              '& .MuiStepConnector-root.Mui-completed .MuiStepConnector-line': {
+                borderColor: '#4caf50',
+              },
+              '& .MuiStepConnector-root.Mui-active .MuiStepConnector-line': {
+                borderColor: '#2196f3',
+              },
+            }}
+          >
+            {steps.map((step, index) => {
+              const IconComponent = step.icon;
+              const isCompleted = index < currentStep;
+              const isActive = index === currentStep;
 
-        {currentStep < steps.length - 1 ? (
-          <Button
-            variant="contained"
-            onClick={handleNext}
-            size="large"
+              return (
+                <Step key={step.label}>
+                  <StepLabel>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 1,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: { xs: 48, sm: 56, md: 64 },
+                          height: { xs: 48, sm: 56, md: 64 },
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          background: isActive
+                            ? 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)'
+                            : isCompleted
+                            ? 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)'
+                            : 'rgba(255, 255, 255, 0.1)',
+                          border: '2px solid',
+                          borderColor: isActive
+                            ? '#2196f3'
+                            : isCompleted
+                            ? '#4caf50'
+                            : 'rgba(255, 255, 255, 0.2)',
+                          boxShadow: isActive
+                            ? '0 0 20px rgba(33, 150, 243, 0.5), 0 4px 8px rgba(0, 0, 0, 0.2)'
+                            : isCompleted
+                            ? '0 0 15px rgba(76, 175, 80, 0.4)'
+                            : 'none',
+                          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                          transform: isActive ? 'scale(1.1)' : 'scale(1)',
+                          animation: isActive ? 'pulse 2s ease-in-out infinite' : 'none',
+                          '@keyframes pulse': {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(33, 150, 243, 0.5)' },
+                            '50%': { boxShadow: '0 0 30px rgba(33, 150, 243, 0.8)' },
+                          },
+                        }}
+                      >
+                        <IconComponent
+                          sx={{
+                            fontSize: { xs: 24, sm: 28, md: 32 },
+                            color: isActive || isCompleted ? '#fff' : 'rgba(255, 255, 255, 0.5)',
+                            filter: isActive
+                              ? 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                              : 'none',
+                          }}
+                        />
+                      </Box>
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          fontWeight: isActive ? 700 : 500,
+                          color: isActive
+                            ? '#2196f3'
+                            : isCompleted
+                            ? '#4caf50'
+                            : 'rgba(255, 255, 255, 0.6)',
+                          fontSize: { xs: '0.7rem', sm: '0.75rem', md: '0.85rem' },
+                          transition: 'all 0.3s ease',
+                          display: { xs: 'none', sm: 'block' },
+                        }}
+                      >
+                        {step.label}
+                      </Typography>
+                    </Box>
+                  </StepLabel>
+                </Step>
+              );
+            })}
+          </Stepper>
+
+          {/* Progress */}
+          <Box sx={{ mt: { xs: 2, sm: 3 }, textAlign: 'center' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 500,
+                fontSize: { xs: '0.8rem', sm: '0.85rem', md: '0.9rem' },
+              }}
+            >
+              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                Step {currentStep + 1} of {steps.length} • {Math.round(((currentStep + 1) / steps.length) * 100)}% Complete
+              </Box>
+              <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {currentStep + 1}/{steps.length} • {Math.round(((currentStep + 1) / steps.length) * 100)}%
+              </Box>
+            </Typography>
+          </Box>
+        </Paper>
+
+        {/* Form Content */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: { xs: 3, sm: 4, md: 5 },
+            mb: { xs: 3, sm: 4 },
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: { xs: '16px', sm: '20px', md: '24px' },
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            animation: 'fadeInUp 0.8s ease-out 0.4s both',
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              boxShadow: '0 12px 40px rgba(0, 0, 0, 0.4)',
+              transform: { xs: 'none', md: 'translateY(-2px)' },
+            },
+          }}
+        >
+          <Box
+            sx={{
+              animation: 'fadeIn 0.5s ease-out',
+              '@keyframes fadeIn': {
+                '0%': { opacity: 0 },
+                '100%': { opacity: 1 },
+              },
+            }}
           >
-            Next
-          </Button>
-        ) : (
+            {getCurrentForm()}
+          </Box>
+        </Paper>
+
+        {/* Navigation Buttons */}
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            gap: { xs: 1.5, sm: 2 },
+            animation: 'fadeInUp 0.8s ease-out 0.6s both',
+          }}
+        >
           <Button
-            variant="contained"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
+            variant="outlined"
+            onClick={handleBack}
+            disabled={currentStep === 0}
             size="large"
+            sx={{
+              px: { xs: 2.5, sm: 3.5, md: 4 },
+              py: { xs: 1.25, sm: 1.5 },
+              borderRadius: { xs: '10px', sm: '12px' },
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+              color: '#fff',
+              fontWeight: 600,
+              fontSize: { xs: '0.9rem', sm: '1rem' },
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              backdropFilter: 'blur(10px)',
+              background: 'rgba(255, 255, 255, 0.05)',
+              '&:hover': {
+                borderColor: 'rgba(255, 255, 255, 0.5)',
+                background: 'rgba(255, 255, 255, 0.1)',
+                transform: { xs: 'none', sm: 'translateX(-4px)' },
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              },
+              '&:disabled': {
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+                color: 'rgba(255, 255, 255, 0.3)',
+              },
+            }}
           >
-            {isSubmitting ? 'Finding Matches...' : 'Submit Questionnaire'}
+            Back
           </Button>
-        )}
-      </Box>
-    </Container>
+
+          {currentStep < steps.length - 1 ? (
+            <Button
+              variant="contained"
+              onClick={handleNext}
+              size="large"
+              sx={{
+                px: { xs: 2.5, sm: 3.5, md: 4 },
+                py: { xs: 1.25, sm: 1.5 },
+                borderRadius: { xs: '10px', sm: '12px' },
+                background: 'linear-gradient(135deg, #2196f3 0%, #1976d2 100%)',
+                fontWeight: 700,
+                fontSize: { xs: '0.9rem', sm: '1rem' },
+                boxShadow: '0 4px 12px rgba(33, 150, 243, 0.4)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                  transition: 'left 0.5s ease',
+                },
+                '&:hover': {
+                  transform: { xs: 'translateY(-2px)', sm: 'translateX(4px) translateY(-2px)' },
+                  boxShadow: '0 8px 20px rgba(33, 150, 243, 0.6)',
+                  '&::before': {
+                    left: '100%',
+                  },
+                },
+                '&:active': {
+                  transform: { xs: 'translateY(0)', sm: 'translateX(4px) translateY(0px)' },
+                },
+              }}
+            >
+              Next
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              size="large"
+              sx={{
+                px: { xs: 2.5, sm: 3.5, md: 4 },
+                py: { xs: 1.25, sm: 1.5 },
+                borderRadius: { xs: '10px', sm: '12px' },
+                background: isSubmitting
+                  ? 'linear-gradient(135deg, #9e9e9e 0%, #757575 100%)'
+                  : 'linear-gradient(135deg, #4caf50 0%, #388e3c 100%)',
+                fontWeight: 700,
+                fontSize: { xs: '0.85rem', sm: '0.95rem', md: '1rem' },
+                boxShadow: '0 4px 12px rgba(76, 175, 80, 0.4)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                  transition: 'left 0.5s ease',
+                },
+                '&:hover:not(:disabled)': {
+                  transform: { xs: 'translateY(-2px)', sm: 'translateX(4px) translateY(-2px)' },
+                  boxShadow: '0 8px 20px rgba(76, 175, 80, 0.6)',
+                  '&::before': {
+                    left: '100%',
+                  },
+                },
+                '&:active:not(:disabled)': {
+                  transform: { xs: 'translateY(0)', sm: 'translateX(4px) translateY(0px)' },
+                },
+                '&:disabled': {
+                  cursor: 'not-allowed',
+                },
+              }}
+            >
+              <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                {isSubmitting ? 'Finding Matches...' : 'Submit Questionnaire'}
+              </Box>
+              <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                {isSubmitting ? 'Finding...' : 'Submit'}
+              </Box>
+            </Button>
+          )}
+        </Box>
+      </Container>
+    </Box>
   );
 }
