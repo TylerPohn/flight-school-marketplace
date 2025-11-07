@@ -1,0 +1,28 @@
+import { chromium } from 'playwright';
+
+const pages = [
+  { url: 'http://localhost:5173/', name: 'home-school-directory' },
+  { url: 'http://localhost:5173/schools/school-001', name: 'school-profile' },
+  { url: 'http://localhost:5173/find-my-school', name: 'ai-matching-wizard' },
+  { url: 'http://localhost:5173/compare?schools=school-001,school-002,school-003', name: 'school-comparison' },
+  { url: 'http://localhost:5173/financing-calculator', name: 'financing-calculator' },
+];
+
+(async () => {
+  const browser = await chromium.launch();
+  const context = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  const page = await context.newPage();
+
+  for (const pageInfo of pages) {
+    console.log(`Navigating to ${pageInfo.url}...`);
+    await page.goto(pageInfo.url, { waitUntil: 'networkidle' });
+    await page.waitForTimeout(2000); // Wait for animations
+
+    const screenshotPath = `./screenshots/${pageInfo.name}.png`;
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    console.log(`Screenshot saved: ${screenshotPath}`);
+  }
+
+  await browser.close();
+  console.log('All screenshots captured!');
+})();
