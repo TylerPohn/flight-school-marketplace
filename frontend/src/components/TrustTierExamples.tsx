@@ -30,7 +30,7 @@ export const Example1_BasicBadge: React.FC = () => {
       <Typography variant="h6" sx={{ mb: 2 }}>
         Example 1: Basic Badge with Tooltip
       </Typography>
-      <TrustBadge tier={TrustTier.PREMIER} />
+      <TrustBadge tier={TrustTier.PREMIER as TrustTier} />
     </Box>
   );
 };
@@ -236,7 +236,7 @@ export const QuickStartTemplate: React.FC = () => {
   const school: SchoolWithTrust = {
     id: '1',
     name: 'Example Flight School',
-    trustTier: TrustTier.PREMIER,
+    trustTier: TrustTier.PREMIER as TrustTier,
     fspSignals: {
       avgHoursToPPL: 72,
       cancelRate: 8,

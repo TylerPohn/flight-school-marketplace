@@ -19,7 +19,6 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-  Grid,
 } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { TrustBadge } from './TrustBadge';
@@ -34,7 +33,7 @@ const DEMO_SCHOOLS: SchoolWithTrust[] = [
   {
     id: '1',
     name: 'Elite Flight Academy',
-    trustTier: TrustTier.PREMIER,
+    trustTier: TrustTier.PREMIER as TrustTier,
     fspSignals: {
       avgHoursToPPL: 72,
       cancelRate: 8,
@@ -45,7 +44,7 @@ const DEMO_SCHOOLS: SchoolWithTrust[] = [
   {
     id: '2',
     name: 'Certified Wings Flight School',
-    trustTier: TrustTier.VERIFIED_FSP,
+    trustTier: TrustTier.VERIFIED_FSP as TrustTier,
     fspSignals: {
       avgHoursToPPL: 76,
       cancelRate: 11,
@@ -56,7 +55,7 @@ const DEMO_SCHOOLS: SchoolWithTrust[] = [
   {
     id: '3',
     name: 'Community Verified Aviation',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
     fspSignals: {
       avgHoursToPPL: 78,
       cancelRate: 14,
@@ -67,7 +66,7 @@ const DEMO_SCHOOLS: SchoolWithTrust[] = [
   {
     id: '4',
     name: 'New Aviation School',
-    trustTier: TrustTier.UNVERIFIED,
+    trustTier: TrustTier.UNVERIFIED as TrustTier,
     // No fspSignals for unverified schools
   },
 ];
@@ -188,9 +187,9 @@ export const TrustBadgeDemo: React.FC = () => {
               Size Variants (Premier)
             </Typography>
             <Stack direction="row" spacing={2} alignItems="center">
-              <TrustBadge tier={TrustTier.PREMIER} size="small" />
-              <TrustBadge tier={TrustTier.PREMIER} size="medium" />
-              <TrustBadge tier={TrustTier.PREMIER} size="large" />
+              <TrustBadge tier={TrustTier.PREMIER as TrustTier} size="small" />
+              <TrustBadge tier={TrustTier.PREMIER as TrustTier} size="medium" />
+              <TrustBadge tier={TrustTier.PREMIER as TrustTier} size="large" />
             </Stack>
           </Box>
 
@@ -200,10 +199,10 @@ export const TrustBadgeDemo: React.FC = () => {
               All Trust Tiers (hover for tooltips)
             </Typography>
             <Stack direction="row" spacing={2} flexWrap="wrap">
-              <TrustBadge tier={TrustTier.PREMIER} />
-              <TrustBadge tier={TrustTier.VERIFIED_FSP} />
-              <TrustBadge tier={TrustTier.COMMUNITY_VERIFIED} />
-              <TrustBadge tier={TrustTier.UNVERIFIED} />
+              <TrustBadge tier={TrustTier.PREMIER as TrustTier} />
+              <TrustBadge tier={TrustTier.VERIFIED_FSP as TrustTier} />
+              <TrustBadge tier={TrustTier.COMMUNITY_VERIFIED as TrustTier} />
+              <TrustBadge tier={TrustTier.UNVERIFIED as TrustTier} />
             </Stack>
           </Box>
         </Stack>

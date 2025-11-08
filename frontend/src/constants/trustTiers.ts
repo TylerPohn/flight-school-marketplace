@@ -37,7 +37,7 @@ export interface TierConfig {
  * - Unverified: Gray #9E9E9E, White text - 4.5:1 contrast (AA)
  */
 export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
-  [TrustTier.PREMIER]: {
+  'PREMIER': {
     color: '#FFD700',
     textColor: '#333333',
     icon: WorkspacePremium,
@@ -45,7 +45,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
     description: 'Fully verified school with excellent safety and completion records',
     showSignals: true,
   },
-  [TrustTier.VERIFIED_FSP]: {
+  'VERIFIED_FSP': {
     color: '#4CAF50',
     textColor: '#FFFFFF',
     icon: VerifiedUser,
@@ -53,7 +53,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
     description: 'Verified Flight School Partner with solid performance metrics',
     showSignals: true,
   },
-  [TrustTier.COMMUNITY_VERIFIED]: {
+  'COMMUNITY_VERIFIED': {
     color: '#2196F3',
     textColor: '#FFFFFF',
     icon: Handshake,
@@ -61,7 +61,7 @@ export const TRUST_TIER_CONFIG: Record<TrustTier, TierConfig> = {
     description: 'Verified by community reviews and feedback',
     showSignals: true,
   },
-  [TrustTier.UNVERIFIED]: {
+  'UNVERIFIED': {
     color: '#9E9E9E',
     textColor: '#FFFFFF',
     icon: WarningAmber,
@@ -93,25 +93,25 @@ export const INDUSTRY_BENCHMARKS = {
  * not direct FSP reporting, so metrics may be less precise.
  */
 export const MOCK_FSP_SIGNALS: Record<TrustTier, Partial<FSPSignals>> = {
-  [TrustTier.PREMIER]: {
+  'PREMIER': {
     avgHoursToPPL: 72,
     cancelRate: 8,
     onTimeRate: 96,
     studentSatisfaction: 4.8,
   },
-  [TrustTier.VERIFIED_FSP]: {
+  'VERIFIED_FSP': {
     avgHoursToPPL: 76,
     cancelRate: 11,
     onTimeRate: 92,
     studentSatisfaction: 4.5,
   },
-  [TrustTier.COMMUNITY_VERIFIED]: {
+  'COMMUNITY_VERIFIED': {
     avgHoursToPPL: 78,
     cancelRate: 14,
     onTimeRate: 88,
     studentSatisfaction: 4.2,
   },
-  [TrustTier.UNVERIFIED]: {
+  'UNVERIFIED': {
     // No signals available for unverified schools
   },
 };

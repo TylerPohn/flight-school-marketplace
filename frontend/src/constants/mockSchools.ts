@@ -17,7 +17,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '1',
     name: 'Elite Flight Academy',
-    trustTier: TrustTier.PREMIER,
+    trustTier: TrustTier.PREMIER as TrustTier,
     fspSignals: {
       avgHoursToPPL: 72,
       cancelRate: 8,
@@ -28,7 +28,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '2',
     name: 'SkyHigh Aviation Training Center',
-    trustTier: TrustTier.PREMIER,
+    trustTier: TrustTier.PREMIER as TrustTier,
     fspSignals: {
       avgHoursToPPL: 70,
       cancelRate: 7,
@@ -39,7 +39,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '3',
     name: 'Certified Wings Flight School',
-    trustTier: TrustTier.VERIFIED_FSP,
+    trustTier: TrustTier.VERIFIED_FSP as TrustTier,
     fspSignals: {
       avgHoursToPPL: 76,
       cancelRate: 11,
@@ -50,7 +50,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '4',
     name: 'Horizon Aviation Institute',
-    trustTier: TrustTier.VERIFIED_FSP,
+    trustTier: TrustTier.VERIFIED_FSP as TrustTier,
     fspSignals: {
       avgHoursToPPL: 74,
       cancelRate: 10,
@@ -61,7 +61,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '5',
     name: 'Blue Sky Flight Training',
-    trustTier: TrustTier.VERIFIED_FSP,
+    trustTier: TrustTier.VERIFIED_FSP as TrustTier,
     fspSignals: {
       avgHoursToPPL: 77,
       cancelRate: 12,
@@ -72,7 +72,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '6',
     name: 'Community Verified Aviation',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
     fspSignals: {
       avgHoursToPPL: 78,
       cancelRate: 14,
@@ -83,7 +83,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '7',
     name: 'Local Wings Flight School',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
     fspSignals: {
       avgHoursToPPL: 80,
       cancelRate: 15,
@@ -94,7 +94,7 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '8',
     name: 'Freedom Flight Academy',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
     fspSignals: {
       avgHoursToPPL: 79,
       cancelRate: 13,
@@ -105,13 +105,13 @@ export const MOCK_SCHOOLS_WITH_TRUST: SchoolWithTrust[] = [
   {
     id: '9',
     name: 'New Aviation School',
-    trustTier: TrustTier.UNVERIFIED,
+    trustTier: TrustTier.UNVERIFIED as TrustTier,
     // No fspSignals for unverified schools
   },
   {
     id: '10',
     name: 'Startup Flight Training',
-    trustTier: TrustTier.UNVERIFIED,
+    trustTier: TrustTier.UNVERIFIED as TrustTier,
     // No fspSignals for unverified schools
   },
 ];

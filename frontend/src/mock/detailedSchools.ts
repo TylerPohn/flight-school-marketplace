@@ -100,7 +100,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'IR', 'CPL'],
     costBand: { min: 12000, max: 16000 },
     trainingType: 'Part141',
-    trustTier: TrustTier.VERIFIED_FSP,
+    trustTier: TrustTier.VERIFIED_FSP as TrustTier,
 
     description: `SkyHigh Academy has been a leader in pilot training since 2005. Located in sunny San Diego with ideal flying weather year-round, we pride ourselves on personalized instruction, modern aircraft, and an unwavering commitment to safety. With over 600 successful PPL completions, SkyHigh provides the ideal training environment for aspiring pilots. Our experienced instructors use proven teaching methodologies combined with state-of-the-art technology to accelerate your learning while maintaining the highest safety standards.`,
 
@@ -278,7 +278,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'IR', 'CPL', 'ATPL'],
     costBand: { min: 45000, max: 65000 },
     trainingType: 'Part141',
-    trustTier: TrustTier.PREMIER,
+    trustTier: TrustTier.PREMIER as TrustTier,
 
     description: `Sunshine Aviation Academy is South Florida's premier flight training institution, established in 2001. We specialize in accelerated training programs that take students from zero experience to airline-ready in as little as 12 months. Our state-of-the-art facility, diverse fleet, and experienced instructor team have produced over 1,200 professional pilots now flying for major airlines worldwide. With year-round VFR weather and proximity to complex airspace, Miami offers an ideal training environment for serious aviation students.`,
 
@@ -482,7 +482,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'IR'],
     costBand: { min: 14000, max: 18000 },
     trainingType: 'Part61',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
 
     description: `AeroFlight Training has served the Dallas-Fort Worth metroplex since 2012. We offer flexible, personalized flight training for recreational pilots and career-oriented students alike. Our Part 61 approach allows for customized training schedules perfect for working professionals and students. With a focus on small class sizes and individual attention, our experienced instructors ensure each student receives the guidance they need to succeed. Located at a non-towered airport, students gain valuable experience in both controlled and uncontrolled airspace.`,
 
@@ -646,7 +646,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'CPL'],
     costBand: { min: 11000, max: 14000 },
     trainingType: 'Part141',
-    trustTier: TrustTier.UNVERIFIED,
+    trustTier: TrustTier.UNVERIFIED as TrustTier,
 
     description: `Cloudchaser Flight Center is Phoenix's newest flight school, established in 2023. We bring fresh energy and modern training techniques to the Valley of the Sun. Our accelerated Part 141 programs utilize the latest technology and teaching methods to help you achieve your aviation goals efficiently and affordably. With 300+ days of VFR weather annually, Phoenix offers ideal conditions for intensive training. Our young, energetic instructor team is building a reputation for excellence and innovation in flight training.`,
 
@@ -801,7 +801,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'IR'],
     costBand: { min: 13000, max: 17000 },
     trainingType: 'Part61',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: TrustTier.COMMUNITY_VERIFIED as TrustTier,
 
     description: `Rocky Mountain Flight School has been training pilots in the Colorado high country since 2008. We specialize in mountain flying and high-altitude operations, providing unique training opportunities you won't find at sea-level schools. Our experienced instructors teach essential mountain flying techniques including density altitude operations, mountain wave awareness, and high-altitude airport procedures. Located at Centennial Airport, students gain valuable experience in high-density airspace while learning skills applicable anywhere in the world. Perfect for pilots who want comprehensive training in challenging environments.`,
 

@@ -94,11 +94,6 @@ export const ComparisonPage: React.FC = () => {
     setSchools(selectedSchools);
   }, [searchParams]);
 
-  const getBestValueStyle = (index: number, bestIndex: number) => ({
-    backgroundColor: index === bestIndex ? 'rgba(76, 175, 80, 0.15)' : 'transparent',
-    color: index === bestIndex ? '#81c784' : 'inherit',
-    fontWeight: index === bestIndex ? 600 : 'normal',
-  });
 
   const comparisonRows: ComparisonRow[] = [
     {
