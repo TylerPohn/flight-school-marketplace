@@ -176,7 +176,7 @@ export const FSPSignalsPanel: React.FC<FSPSignalsPanelProps> = ({
         <CardHeader
           title={
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <span>{tierConfig.icon}</span>
+              {tierConfig.icon && <tierConfig.icon />}
               <span>{schoolName}</span>
             </Box>
           }
@@ -235,7 +235,7 @@ export const FSPSignalsPanel: React.FC<FSPSignalsPanelProps> = ({
       <CardHeader
         title={
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <span>{tierConfig.icon}</span>
+            {tierConfig.icon && <tierConfig.icon />}
             <span>{schoolName}</span>
           </Box>
         }
