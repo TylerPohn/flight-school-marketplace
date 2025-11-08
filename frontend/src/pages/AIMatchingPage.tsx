@@ -144,17 +144,207 @@ export function AIMatchingPage() {
     // Submit questionnaire
     submitQuestionnaire(finalData);
 
-    // Navigate to results page
+    // Navigate to results page after AI matching animation (3 seconds)
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/find-my-school/results');
-    }, 500);
+    }, 3000);
   };
 
   const handleRefine = () => {
     navigate('/find-my-school');
     reset();
   };
+
+  // Show AI matching animation while submitting
+  if (isSubmitting) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Animated background particles */}
+        <Box
+          sx={{
+            position: 'absolute',
+            width: '100%',
+            height: '100%',
+            '&::before, &::after': {
+              content: '""',
+              position: 'absolute',
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(33, 150, 243, 0.3) 0%, transparent 70%)',
+              animation: 'pulse 2s ease-in-out infinite',
+            },
+            '&::before': {
+              width: '400px',
+              height: '400px',
+              top: '20%',
+              left: '10%',
+              animationDelay: '0s',
+            },
+            '&::after': {
+              width: '300px',
+              height: '300px',
+              bottom: '20%',
+              right: '10%',
+              animationDelay: '1s',
+            },
+            '@keyframes pulse': {
+              '0%, 100%': { transform: 'scale(1)', opacity: 0.3 },
+              '50%': { transform: 'scale(1.2)', opacity: 0.6 },
+            },
+          }}
+        />
+
+        <Container maxWidth="sm" sx={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
+          <Box
+            sx={{
+              mb: 4,
+              animation: 'rotate 2s linear infinite',
+              '@keyframes rotate': {
+                '0%': { transform: 'rotate(0deg)' },
+                '100%': { transform: 'rotate(360deg)' },
+              },
+            }}
+          >
+            <Box
+              sx={{
+                width: 120,
+                height: 120,
+                margin: '0 auto',
+                position: 'relative',
+              }}
+            >
+              {/* Outer ring */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  border: '4px solid rgba(33, 150, 243, 0.2)',
+                  borderTop: '4px solid #2196f3',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                  '@keyframes spin': {
+                    '0%': { transform: 'rotate(0deg)' },
+                    '100%': { transform: 'rotate(360deg)' },
+                  },
+                }}
+              />
+              {/* Inner ring */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '80%',
+                  height: '80%',
+                  top: '10%',
+                  left: '10%',
+                  border: '3px solid rgba(76, 175, 80, 0.2)',
+                  borderBottom: '3px solid #4caf50',
+                  borderRadius: '50%',
+                  animation: 'spinReverse 1.5s linear infinite',
+                  '@keyframes spinReverse': {
+                    '0%': { transform: 'rotate(360deg)' },
+                    '100%': { transform: 'rotate(0deg)' },
+                  },
+                }}
+              />
+              {/* Center dot */}
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '30%',
+                  height: '30%',
+                  top: '35%',
+                  left: '35%',
+                  background: 'linear-gradient(135deg, #2196f3 0%, #4caf50 100%)',
+                  borderRadius: '50%',
+                  boxShadow: '0 0 20px rgba(33, 150, 243, 0.8)',
+                  animation: 'glow 1s ease-in-out infinite alternate',
+                  '@keyframes glow': {
+                    '0%': { boxShadow: '0 0 20px rgba(33, 150, 243, 0.8)' },
+                    '100%': { boxShadow: '0 0 40px rgba(76, 175, 80, 0.8)' },
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+
+          <Typography
+            variant="h4"
+            sx={{
+              color: '#fff',
+              fontWeight: 700,
+              mb: 2,
+              animation: 'fadeIn 1s ease-in-out',
+              '@keyframes fadeIn': {
+                '0%': { opacity: 0 },
+                '100%': { opacity: 1 },
+              },
+            }}
+          >
+            Analyzing Your Profile...
+          </Typography>
+
+          <Typography
+            variant="body1"
+            sx={{
+              color: 'rgba(255, 255, 255, 0.7)',
+              mb: 3,
+              animation: 'fadeIn 1s ease-in-out 0.3s both',
+            }}
+          >
+            Our AI is matching you with the perfect flight schools based on your preferences
+          </Typography>
+
+          {/* Progress indicators */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, alignItems: 'flex-start', maxWidth: 400, mx: 'auto' }}>
+            {[
+              { label: 'Analyzing your goals', delay: '0s' },
+              { label: 'Comparing school locations', delay: '0.8s' },
+              { label: 'Calculating best matches', delay: '1.6s' },
+            ].map((item, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  opacity: 0,
+                  animation: `fadeInSlide 0.5s ease-out ${item.delay} forwards`,
+                  '@keyframes fadeInSlide': {
+                    '0%': { opacity: 0, transform: 'translateX(-20px)' },
+                    '100%': { opacity: 1, transform: 'translateX(0)' },
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: '50%',
+                    background: '#4caf50',
+                    boxShadow: '0 0 10px rgba(76, 175, 80, 0.8)',
+                  }}
+                />
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  {item.label}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
+        </Container>
+      </Box>
+    );
+  }
 
   // Show results if available
   if (showResults && results) {

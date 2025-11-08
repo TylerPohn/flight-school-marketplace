@@ -63,7 +63,8 @@ export interface RankedSchool {
   school: MockSchool;
   matchScore: number;
   explanation: string;
-  ranking: number; // 1-7
+  ranking: number; // 1-10 (top matches only)
+  distance?: number; // Distance in miles from user's location
 }
 
 // For geocoding common cities

@@ -217,32 +217,6 @@ export const FinancingCalculatorPage: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Demo Notice */}
-        <Alert
-          severity="info"
-          sx={{
-            mb: 3,
-            background: 'rgba(33, 150, 243, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(33, 150, 243, 0.3)',
-            color: '#fff',
-            animation: 'fadeInUp 0.8s ease-out 0.2s both',
-            '@keyframes fadeInUp': {
-              '0%': { opacity: 0, transform: 'translateY(20px)' },
-              '100%': { opacity: 1, transform: 'translateY(0)' },
-            },
-            '& .MuiAlert-icon': {
-              color: '#64b5f6',
-            },
-          }}
-        >
-          <Typography variant="body2">
-            <strong>Demo Mode:</strong> This calculator uses mock lender data for
-            demonstration purposes. For actual financing, please contact lenders
-            directly.
-          </Typography>
-        </Alert>
-
         {/* Main Calculator */}
         <Box
           sx={{

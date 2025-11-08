@@ -32,113 +32,141 @@ export function calculateDistance(point1: Location, point2: Location): number {
 
 /**
  * Calculate match score for a school based on user profile
- * Returns score 0-100
+ * Returns score 0-100, realistically in 65-94 range
  */
 export function calculateMatchScore(profile: MatchProfile, school: MockSchool): number {
-  let score = 60; // Base score
+  let score = 40; // Lower base score for more realistic range
 
   // Program Match (0-20 points)
   if (profile.trainingGoal === school.primaryProgram) {
     score += 20;
   } else if (school.programs.includes(profile.trainingGoal)) {
-    score += 10;
+    score += 12;
+  } else {
+    score += 5; // Still offers some value
   }
 
-  // Budget Match (0-25 points)
+  // Budget Match (0-20 points) - reduced from 25
   const studentBudget = profile.maxBudget;
   const schoolMinCost = school.costBand.min;
   const schoolMaxCost = school.costBand.max;
 
   if (studentBudget >= schoolMinCost) {
     if (studentBudget <= schoolMaxCost) {
-      score += 25; // Perfect match
+      score += 20; // Perfect match
     } else {
-      score += 20; // Within range, above minimum
+      score += 16; // Within range, above minimum
     }
   } else if (studentBudget >= schoolMinCost * 0.9) {
     score += 10; // Close enough (90%)
+  } else {
+    score += 4; // Over budget penalty
   }
 
-  // Location Match (0-20 points)
+  // Location Match (0-18 points) - reduced from 20
   const distance = calculateDistance(profile.location, school.location);
   const maxRadius = profile.searchRadius;
 
   if (distance <= maxRadius * 0.25) {
-    score += 20; // Very close
+    score += 18; // Very close
+  } else if (distance <= maxRadius * 0.5) {
+    score += 14; // Close
   } else if (distance <= maxRadius * 0.75) {
-    score += 15; // Reasonably close
+    score += 10; // Reasonably close
   } else if (distance <= maxRadius) {
-    score += 10; // At edge of radius
+    score += 6; // At edge of radius
   } else if (distance <= maxRadius * 1.5) {
-    score += 5; // Slightly outside preferred radius
+    score += 3; // Slightly outside preferred radius
+  } else {
+    score += 1; // Too far but still listed
   }
 
-  // Training Type Match (0-10 points)
+  // Training Type Match (0-8 points) - reduced from 10
   if (profile.trainingTypePreference === 'No Preference') {
-    score += 10;
+    score += 8;
   } else if (profile.trainingTypePreference === school.trainingType) {
-    score += 10;
+    score += 8;
+  } else {
+    score += 4; // Partial credit
   }
 
-  // Preference Bonus (0-10 points)
+  // Preference Bonus (0-8 points) - reduced from 10
   const matchingPreferences = profile.preferences.filter((pref) =>
     school.preferences.includes(pref)
   );
 
-  if (matchingPreferences.length >= 2) {
-    score += 10;
+  if (matchingPreferences.length >= 3) {
+    score += 8;
+  } else if (matchingPreferences.length === 2) {
+    score += 6;
   } else if (matchingPreferences.length === 1) {
-    score += 5;
+    score += 3;
   }
 
-  // Experience Adjustment (0-5 bonus)
+  // Experience Adjustment (0-4 bonus) - reduced from 5
   if (school.trustTier === 'Verified FSP' &&
       (profile.priorExperience === '20+ hours' || profile.priorExperience === '10-20 hours')) {
-    score += 5;
+    score += 4;
   } else if (school.intensityLevel === profile.intensityPreference) {
     score += 3;
   }
 
-  // Financing bonus if needed
+  // Financing bonus if needed (0-2 points)
   if (profile.financingInterest && school.hasFinancing) {
     score += 2;
   }
 
-  // Housing bonus if needed
+  // Housing bonus if needed (0-2 points)
   if (profile.housingNeeded && school.hasHousing) {
-    score += 3;
+    score += 2;
   }
 
-  // Cap at 100
-  return Math.min(100, Math.round(score));
+  // Add small random variation (-2 to +2) to prevent identical scores
+  const variation = Math.floor(Math.random() * 5) - 2;
+  score += variation;
+
+  // Cap at 94 (never show 100% or above)
+  return Math.min(94, Math.max(50, Math.round(score)));
 }
 
 /**
  * Rank all schools based on match score
  * Returns sorted array of RankedSchool objects
+ * Filters out schools beyond 1.5x the search radius and limits to top 10
  */
 export function rankSchools(profile: MatchProfile, schools: MockSchool[]): RankedSchool[] {
-  const rankedSchools: RankedSchool[] = schools.map((school) => {
-    const matchScore = calculateMatchScore(profile, school);
-    const explanation = generateMatchExplanation(school, profile, matchScore);
+  const rankedSchools: RankedSchool[] = schools
+    .map((school) => {
+      const matchScore = calculateMatchScore(profile, school);
+      const explanation = generateMatchExplanation(school, profile, matchScore);
+      const distance = calculateDistance(profile.location, school.location);
 
-    return {
-      school,
-      matchScore,
-      explanation,
-      ranking: 0, // Will be set after sorting
-    };
-  });
+      return {
+        school,
+        matchScore,
+        explanation,
+        ranking: 0, // Will be set after sorting
+        distance, // Store for filtering
+      };
+    })
+    // Filter out schools that are too far (beyond 1.5x search radius)
+    .filter((rankedSchool) => {
+      const maxDistance = profile.searchRadius * 1.5;
+      return rankedSchool.distance <= maxDistance;
+    });
 
   // Sort by score descending
   rankedSchools.sort((a, b) => b.matchScore - a.matchScore);
 
+  // Limit to top 10 schools
+  const topSchools = rankedSchools.slice(0, 10);
+
   // Assign rankings
-  rankedSchools.forEach((rankedSchool, index) => {
+  topSchools.forEach((rankedSchool, index) => {
     rankedSchool.ranking = index + 1;
   });
 
-  return rankedSchools;
+  return topSchools;
 }
 
 /**
