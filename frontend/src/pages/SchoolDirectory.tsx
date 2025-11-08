@@ -2,9 +2,22 @@ import React from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import { School as SchoolIcon } from '@mui/icons-material';
 import { SchoolCard } from '../components/SchoolCard';
+import { SchoolFiltersComponent } from '../components/SchoolFilters';
+import { useSchoolFilters } from '../hooks/useSchoolFilters';
 import { mockSchools } from '../mock/schools';
 
 export const SchoolDirectory: React.FC = () => {
+  // Initialize filter hook with mock school data
+  const {
+    filters,
+    updateFilter,
+    clearAllFilters,
+    filteredSchools,
+    activeFilterCount,
+    availableStates,
+    availablePrograms,
+  } = useSchoolFilters(mockSchools);
+
   return (
     <Box
       sx={{
@@ -24,7 +37,7 @@ export const SchoolDirectory: React.FC = () => {
         },
       }}
     >
-      <Container maxWidth="lg" sx={{ py: { xs: 3, sm: 4, md: 5 }, pb: { xs: 8, sm: 10, md: 12 }, position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="xl" sx={{ py: { xs: 3, sm: 4, md: 5 }, pb: { xs: 8, sm: 10, md: 12 }, position: 'relative', zIndex: 1 }}>
         <Box
           sx={{
             mb: { xs: 4, sm: 5 },
@@ -89,32 +102,73 @@ export const SchoolDirectory: React.FC = () => {
           </Typography>
         </Box>
 
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', md: 'repeat(3, 1fr)' },
-            gap: { xs: 2, sm: 2.5, md: 3 },
-            animation: 'fadeInUp 0.8s ease-out 0.2s both',
-            '@keyframes fadeInUp': {
-              '0%': { opacity: 0, transform: 'translateY(30px)' },
-              '100%': { opacity: 1, transform: 'translateY(0)' },
-            },
-          }}
-        >
-          {mockSchools.map((school, index) => (
-            <Box
-              key={school.id}
-              sx={{
-                animation: `fadeInScale 0.5s ease-out ${0.1 * index}s both`,
-                '@keyframes fadeInScale': {
-                  '0%': { opacity: 0, transform: 'scale(0.9)' },
-                  '100%': { opacity: 1, transform: 'scale(1)' },
-                },
-              }}
-            >
-              <SchoolCard school={school} gradientIndex={index} />
-            </Box>
-          ))}
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+          {/* Left Column: Filters */}
+          <Box sx={{ flex: { md: '0 0 300px' } }}>
+            <SchoolFiltersComponent
+              filters={filters}
+              onSearchChange={(query) => updateFilter('searchQuery', query)}
+              onProgramTypesChange={(programs) => updateFilter('programTypes', programs)}
+              onTrainingTypeChange={(type) => updateFilter('trainingType', type)}
+              onBudgetRangeChange={(range) => updateFilter('budgetRange', range)}
+              onStateChange={(state) => updateFilter('selectedState', state)}
+              onSortChange={(sortBy) => updateFilter('sortBy', sortBy)}
+              onClearAll={clearAllFilters}
+              activeFilterCount={activeFilterCount}
+              availableStates={availableStates}
+              availablePrograms={availablePrograms}
+              filteredCount={filteredSchools.length}
+              totalCount={mockSchools.length}
+            />
+          </Box>
+
+          {/* Right Column: School Cards */}
+          <Box sx={{ flex: 1 }}>
+            {filteredSchools.length > 0 ? (
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                  gap: { xs: 2, sm: 2.5, md: 3 },
+                  animation: 'fadeInUp 0.8s ease-out 0.2s both',
+                  '@keyframes fadeInUp': {
+                    '0%': { opacity: 0, transform: 'translateY(30px)' },
+                    '100%': { opacity: 1, transform: 'translateY(0)' },
+                  },
+                }}
+              >
+                {filteredSchools.map((school, index) => (
+                  <Box
+                    key={school.id}
+                    sx={{
+                      animation: `fadeInScale 0.5s ease-out ${0.1 * index}s both`,
+                      '@keyframes fadeInScale': {
+                        '0%': { opacity: 0, transform: 'scale(0.9)' },
+                        '100%': { opacity: 1, transform: 'scale(1)' },
+                      },
+                    }}
+                  >
+                    <SchoolCard school={school} gradientIndex={index} />
+                  </Box>
+                ))}
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  textAlign: 'center',
+                  py: 8,
+                  px: 2,
+                }}
+              >
+                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} gutterBottom>
+                  No schools match your filters
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
+                  Try adjusting your search criteria or clearing some filters.
+                </Typography>
+              </Box>
+            )}
+          </Box>
         </Box>
       </Container>
     </Box>

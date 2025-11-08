@@ -50,7 +50,7 @@ export const useSchoolFilters = (allSchools: School[]) => {
    * 5. Location filter (school state must match selected state)
    */
   const filteredSchools = useMemo(() => {
-    return allSchools.filter((school) => {
+    const filtered = allSchools.filter((school) => {
       // 1. SEARCH FILTER
       if (filters.searchQuery.trim()) {
         const query = filters.searchQuery.toLowerCase();
@@ -99,6 +99,31 @@ export const useSchoolFilters = (allSchools: School[]) => {
 
       // All filters passed
       return true;
+    });
+
+    // SORTING LOGIC
+    // Sort the filtered results based on the selected sort option
+    return filtered.sort((a, b) => {
+      switch (filters.sortBy) {
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'name-desc':
+          return b.name.localeCompare(a.name);
+        case 'price-asc':
+          return a.costBand.ppl - b.costBand.ppl;
+        case 'price-desc':
+          return b.costBand.ppl - a.costBand.ppl;
+        case 'rating-desc':
+          return b.rating.score - a.rating.score;
+        case 'rating-asc':
+          return a.rating.score - b.rating.score;
+        case 'fleet-size-desc':
+          return b.fleetSize - a.fleetSize;
+        case 'fleet-size-asc':
+          return a.fleetSize - b.fleetSize;
+        default:
+          return 0;
+      }
     });
   }, [allSchools, filters]);
 

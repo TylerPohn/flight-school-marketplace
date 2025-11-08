@@ -5,6 +5,19 @@
  */
 
 /**
+ * Available sorting options for school listings
+ */
+export type SortOption =
+  | 'name-asc'
+  | 'name-desc'
+  | 'price-asc'
+  | 'price-desc'
+  | 'rating-desc'
+  | 'rating-asc'
+  | 'fleet-size-desc'
+  | 'fleet-size-asc';
+
+/**
  * Shape of the filter state
  */
 export interface SchoolFilters {
@@ -22,6 +35,9 @@ export interface SchoolFilters {
 
   /** Selected state (empty string = all states) */
   selectedState: string;
+
+  /** Sort order for results */
+  sortBy: SortOption;
 }
 
 /**
@@ -33,4 +49,5 @@ export const DEFAULT_FILTERS: SchoolFilters = {
   trainingType: 'Both',
   budgetRange: [0, 20000], // PPL costs typically range from $8k-$20k
   selectedState: '',
+  sortBy: 'rating-desc',
 };

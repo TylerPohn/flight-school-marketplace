@@ -144,11 +144,11 @@ export function AIMatchingPage() {
     // Submit questionnaire
     submitQuestionnaire(finalData);
 
-    // Navigate to results page after AI matching animation (3 seconds)
+    // Navigate to results page after AI matching animation (4 seconds)
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/find-my-school/results');
-    }, 3000);
+    }, 4000);
   };
 
   const handleRefine = () => {

@@ -39,6 +39,7 @@ export function SchoolListingPage() {
             onTrainingTypeChange={(type) => updateFilter('trainingType', type)}
             onBudgetRangeChange={(range) => updateFilter('budgetRange', range)}
             onStateChange={(state) => updateFilter('selectedState', state)}
+            onSortChange={(sortBy) => updateFilter('sortBy', sortBy)}
             onClearAll={clearAllFilters}
             activeFilterCount={activeFilterCount}
             availableStates={availableStates}
@@ -50,6 +51,24 @@ export function SchoolListingPage() {
 
         {/* Right Column: School Listings */}
         <Box sx={{ flex: 1 }}>
+          {/* Results Summary Bar */}
+          <Box
+            sx={{
+              mb: 3,
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: 2
+            }}
+          >
+            <Typography variant="body2" color="text.secondary">
+              {filteredSchools.length === mockSchools.length
+                ? `Showing all ${filteredSchools.length} schools`
+                : `Found ${filteredSchools.length} of ${mockSchools.length} schools`}
+            </Typography>
+          </Box>
+
           {filteredSchools.length > 0 ? (
             <Box
               sx={{

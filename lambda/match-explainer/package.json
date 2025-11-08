@@ -1,0 +1,10 @@
+{
+  "name": "match-explainer",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Lambda function to generate AI-powered flight school match explanations",
+  "main": "index.mjs",
+  "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.485.0"
+  }
+}

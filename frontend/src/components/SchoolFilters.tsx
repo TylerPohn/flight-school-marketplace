@@ -24,7 +24,7 @@ import {
   Paper,
 } from '@mui/material';
 import ClearIcon from '@mui/icons-material/Clear';
-import type { SchoolFilters } from '../types/filters';
+import type { SchoolFilters, SortOption } from '../types/filters';
 
 interface SchoolFiltersProps {
   filters: SchoolFilters;
@@ -33,6 +33,7 @@ interface SchoolFiltersProps {
   onTrainingTypeChange: (type: 'Part61' | 'Part141' | 'Both') => void;
   onBudgetRangeChange: (range: [number, number]) => void;
   onStateChange: (state: string) => void;
+  onSortChange: (sortBy: SortOption) => void;
   onClearAll: () => void;
   activeFilterCount: number;
   availableStates: string[];
@@ -54,6 +55,7 @@ export const SchoolFiltersComponent: React.FC<SchoolFiltersProps> = ({
   onTrainingTypeChange,
   onBudgetRangeChange,
   onStateChange,
+  onSortChange,
   onClearAll,
   activeFilterCount,
   availableStates,
@@ -226,6 +228,25 @@ export const SchoolFiltersComponent: React.FC<SchoolFiltersProps> = ({
           onChange={(e) => setSearchInput(e.target.value)}
           size="small"
         />
+
+        {/* SORT BY */}
+        <FormControl fullWidth size="small">
+          <InputLabel>Sort By</InputLabel>
+          <Select
+            value={filters.sortBy}
+            label="Sort By"
+            onChange={(e) => onSortChange(e.target.value as SortOption)}
+          >
+            <MenuItem value="rating-desc">Highest Rated</MenuItem>
+            <MenuItem value="rating-asc">Lowest Rated</MenuItem>
+            <MenuItem value="price-asc">Lowest Price</MenuItem>
+            <MenuItem value="price-desc">Highest Price</MenuItem>
+            <MenuItem value="name-asc">Name (A-Z)</MenuItem>
+            <MenuItem value="name-desc">Name (Z-A)</MenuItem>
+            <MenuItem value="fleet-size-desc">Largest Fleet</MenuItem>
+            <MenuItem value="fleet-size-asc">Smallest Fleet</MenuItem>
+          </Select>
+        </FormControl>
 
         {/* PROGRAM TYPE FILTER */}
         <Box>
