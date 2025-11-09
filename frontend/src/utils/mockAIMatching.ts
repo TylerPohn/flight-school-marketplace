@@ -242,7 +242,7 @@ export function calculateMatchScore(profile: MatchProfile, school: MockSchool): 
   if (school.instructorCount) tieBreaker += Math.min(0.15, school.instructorCount / 500); // Max ~0.15
 
   // Verification trust tier (0-0.3)
-  if (school.trustTier === 'Premier' || school.trustTier === 'Verified FSP') tieBreaker += 0.3;
+  if (school.trustTier === 'Verified FSP') tieBreaker += 0.3;
   else if (school.trustTier === 'Community-Verified') tieBreaker += 0.2;
   else tieBreaker += 0.1;
 
