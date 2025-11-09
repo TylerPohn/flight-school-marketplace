@@ -6,9 +6,10 @@ import { getAIExplanation } from '../services/matchApi';
  * Returns distance in miles
  */
 export function calculateDistance(point1: Location, point2: Location): number {
-  // If either point is missing coordinates, return a large distance
+  // If either point is missing coordinates, return 0 (treat as "anywhere")
+  // This allows "Open to relocating" to match all schools
   if (!point1.lat || !point1.lon || !point2.lat || !point2.lon) {
-    return 999999;
+    return 0;
   }
 
   const R = 3959; // Earth radius in miles

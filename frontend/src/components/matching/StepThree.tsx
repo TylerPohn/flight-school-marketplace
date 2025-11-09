@@ -104,7 +104,7 @@ export function StepThree({ form }: StepThreeProps) {
               '&:hover': { bgcolor: 'secondary.100' },
             }}
             onClick={() => {
-              setValue('location', { city: 'Open to relocating', state: '' });
+              setValue('location', { city: 'Anywhere', state: 'US' });
               setValue('searchRadius', 500);
             }}
           >
