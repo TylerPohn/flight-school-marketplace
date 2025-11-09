@@ -52,7 +52,7 @@ export const Navigation: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             gap: 1.5,
-            mr: 4,
+            mr: 2,
             position: 'relative',
             textDecoration: 'none',
             cursor: 'pointer',
@@ -102,7 +102,7 @@ export const Navigation: React.FC = () => {
         </Box>
 
         {/* Navigation Buttons */}
-        <Box sx={{ display: 'flex', gap: 1, ml: 'auto' }}>
+        <Box sx={{ display: 'flex', gap: 2, flex: 1, justifyContent: 'space-evenly' }}>
           {navItems.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.path);
