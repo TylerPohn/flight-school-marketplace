@@ -1,6 +1,11 @@
 # Flight School Match Explainer Lambda
 
-AI-powered Lambda function that generates personalized explanations for flight school matches using Amazon Bedrock (Claude 3 Sonnet).
+AI-powered Lambda function that generates personalized explanations for flight school matches using Amazon Bedrock (Claude 3.5 Sonnet).
+
+**Important Notes:**
+- Uses Claude 3.5 Sonnet (`anthropic.claude-3-5-sonnet-20240620-v1:0`) - the June 2024 version
+- This model works with direct foundation model invocation (no inference profiles required)
+- Simple, reliable IAM permissions without marketplace subscriptions
 
 ## Prerequisites
 
@@ -17,7 +22,7 @@ AI-powered Lambda function that generates personalized explanations for flight s
 1. Go to [Amazon Bedrock Console](https://console.aws.amazon.com/bedrock/)
 2. Click "Model access" in left sidebar
 3. Click "Enable specific models"
-4. Select **Anthropic - Claude 4.5 Haiku**
+4. Select **Anthropic - Claude 3.5 Sonnet**
 5. Click "Request model access"
 6. Wait for approval (~2 minutes)
 
@@ -181,7 +186,7 @@ aws logs filter-log-events \
 aws cloudwatch get-metric-statistics \
   --namespace AWS/Bedrock \
   --metric-name Invocations \
-  --dimensions Name=ModelId,Value=anthropic.claude-3-sonnet-20240229-v1:0 \
+  --dimensions Name=ModelId,Value=anthropic.claude-3-5-sonnet-20240620-v1:0 \
   --start-time 2024-01-01T00:00:00Z \
   --end-time 2024-01-31T23:59:59Z \
   --period 86400 \
@@ -216,11 +221,11 @@ aws lambda update-function-code \
 
 | Service | Usage | Cost |
 |---------|-------|------|
-| Lambda | 10K invocations × 1s avg | $0.20 |
-| API Gateway | 10K requests | $3.50 |
-| CloudWatch Logs | ~1GB logs | $0.50 |
-| Bedrock (Claude Sonnet) | 10K × 250 tokens output | ~$150 |
-| **Total** | | **~$154/month** |
+| Lambda | 5K invocations × 1s avg | $0.10 |
+| API Gateway | 5K requests | $1.75 |
+| CloudWatch Logs | ~500MB logs | $0.25 |
+| Bedrock (Claude 3.5 Sonnet) | 5K × 250 tokens output | ~$37.50 |
+| **Total** | | **~$40/month** |
 
 ## Troubleshooting
 
@@ -264,7 +269,7 @@ API Gateway
     ↓
 Lambda Function
     ↓
-Amazon Bedrock (Claude 3 Sonnet)
+Amazon Bedrock (Claude 3.5 Sonnet)
     ↓
 AI-Generated Explanation
 ```

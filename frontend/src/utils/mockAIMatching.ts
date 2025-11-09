@@ -160,8 +160,8 @@ export function rankSchools(profile: MatchProfile, schools: MockSchool[]): Ranke
   // Sort by score descending
   rankedSchools.sort((a, b) => b.matchScore - a.matchScore);
 
-  // Limit to top 10 schools
-  const topSchools = rankedSchools.slice(0, 10);
+  // Limit to top 5 schools (all will get AI explanations)
+  const topSchools = rankedSchools.slice(0, 5);
 
   // Assign rankings
   topSchools.forEach((rankedSchool, index) => {
@@ -228,18 +228,16 @@ export function generateMatchExplanation(
 }
 
 /**
- * Enhanced async version of rankSchools that uses AI explanations for top 5 results
+ * Enhanced async version of rankSchools that uses AI explanations for all results
  * Falls back to template explanations if API is unavailable
  */
 export async function rankSchoolsWithAI(profile: MatchProfile, schools: MockSchool[]): Promise<RankedSchool[]> {
   // First, get all rankings with template explanations (synchronous)
+  // This now returns top 5 only
   const rankedSchools = rankSchools(profile, schools);
 
-  // Get AI explanations for top 5 results only
-  const top5 = rankedSchools.slice(0, 5);
-
-  // Fetch AI explanations in parallel
-  const aiExplanationPromises = top5.map(async (rankedSchool) => {
+  // Get AI explanations for all results (top 5)
+  const aiExplanationPromises = rankedSchools.map(async (rankedSchool) => {
     try {
       const aiExplanation = await getAIExplanation({
         student: {
@@ -282,9 +280,8 @@ export async function rankSchoolsWithAI(profile: MatchProfile, schools: MockScho
   });
 
   // Wait for all AI explanations
-  const enhancedTop5 = await Promise.all(aiExplanationPromises);
+  const enhancedResults = await Promise.all(aiExplanationPromises);
 
-  // Combine enhanced top 5 with remaining results (6-10)
-  const remaining = rankedSchools.slice(5);
-  return [...enhancedTop5, ...remaining];
+  // Return all results (top 5) with AI explanations
+  return enhancedResults;
 }

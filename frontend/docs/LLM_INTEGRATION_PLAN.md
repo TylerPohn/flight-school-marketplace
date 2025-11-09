@@ -15,7 +15,7 @@ API Gateway (AWS)
     ↓
 Lambda Function (Node.js)
     ↓
-Amazon Bedrock (Claude 3 Sonnet)
+Amazon Bedrock (Claude 3.5 Sonnet)
     ↓
 Returns personalized explanation
     ↓
@@ -132,7 +132,7 @@ vercel --prod
 1. Go to AWS Console → Amazon Bedrock
 2. Click "Model access" in left sidebar
 3. Click "Enable specific models"
-4. Select: **Anthropic - Claude 3 Sonnet**
+4. Select: **Anthropic - Claude 3.5 Sonnet**
 5. Click "Request model access"
 6. Wait for approval (~2 minutes)
 

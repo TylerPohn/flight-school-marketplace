@@ -1,4 +1,12 @@
+# Environment variables and secrets
 .env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+secrets.*
+aws-exports.js
 
 # Logs
 *.log
