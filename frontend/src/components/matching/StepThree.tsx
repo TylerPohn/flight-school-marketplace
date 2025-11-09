@@ -9,6 +9,7 @@ import {
   TextField,
   Typography,
   FormHelperText,
+  Autocomplete,
 } from '@mui/material';
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import type { StepThreeFormData } from '../../schemas/matchingSchema';
@@ -63,18 +64,39 @@ export function StepThree({ form }: StepThreeProps) {
         <Controller
           name="location"
           control={control}
-          render={({ field }) => (
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="e.g., San Diego, CA or Denver, CO"
-              value={field.value?.city && field.value?.state ? `${field.value.city}, ${field.value.state}` : ''}
-              onChange={(e) => {
-                handleLocationChange(e.target.value);
-              }}
-              helperText="Enter city and state (e.g., Miami, FL)"
-            />
-          )}
+          render={({ field }) => {
+            const cityList = Object.keys(CITY_COORDINATES).sort();
+            const currentValue = field.value?.city && field.value?.state
+              ? `${field.value.city}, ${field.value.state}`
+              : '';
+
+            return (
+              <Autocomplete
+                options={cityList}
+                value={currentValue || null}
+                onChange={(_, newValue) => {
+                  if (newValue) {
+                    handleLocationChange(newValue);
+                  } else {
+                    setValue('location', { city: '', state: '' });
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    placeholder="e.g., San Diego, CA or Denver, CO"
+                    helperText="Select a city from the list"
+                  />
+                )}
+                filterOptions={(options, { inputValue }) => {
+                  return options.filter(option =>
+                    option.toLowerCase().includes(inputValue.toLowerCase())
+                  );
+                }}
+                noOptionsText="No cities found - try a different search"
+              />
+            );
+          }}
         />
         {errors.location?.city && (
           <FormHelperText>{errors.location.city.message}</FormHelperText>
@@ -110,7 +132,12 @@ export function StepThree({ form }: StepThreeProps) {
           >
             Open to relocating
           </Typography>
-          {Object.keys(CITY_COORDINATES).slice(0, 6).map((city) => (
+          {/* Curated list of geographically diverse major cities */}
+          {[
+            'Phoenix, AZ', 'Los Angeles, CA', 'Denver, CO', 'Miami, FL',
+            'Atlanta, GA', 'Chicago, IL', 'Boston, MA', 'Las Vegas, NV',
+            'New York, NY', 'Dallas, TX', 'Seattle, WA', 'Orlando, FL'
+          ].map((city) => (
             <Typography
               key={city}
               variant="caption"

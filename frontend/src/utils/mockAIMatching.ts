@@ -37,59 +37,77 @@ export function calculateDistance(point1: Location, point2: Location): number {
  * Returns score 0-100, realistically in 65-94 range
  */
 export function calculateMatchScore(profile: MatchProfile, school: MockSchool): number {
-  let score = 40; // Lower base score for more realistic range
+  let score = 30; // Base score - allows for wider spread in results
 
-  // Program Match (0-20 points)
+  // Program Match (0-15 points)
   if (profile.trainingGoal === school.primaryProgram) {
-    score += 20;
+    score += 15;
   } else if (school.programs.includes(profile.trainingGoal)) {
-    score += 12;
+    score += 9;
   } else {
-    score += 5; // Still offers some value
+    score += 3; // Still offers some value
   }
 
-  // Budget Match (0-20 points) - reduced from 25
+  // Budget Match (0-15 points) - continuous scoring based on budget fit
   const studentBudget = profile.maxBudget;
   const schoolMinCost = school.costBand.min;
   const schoolMaxCost = school.costBand.max;
+  const schoolMidCost = (schoolMinCost + schoolMaxCost) / 2;
 
-  if (studentBudget >= schoolMinCost) {
-    if (studentBudget <= schoolMaxCost) {
-      score += 20; // Perfect match
-    } else {
-      score += 16; // Within range, above minimum
-    }
-  } else if (studentBudget >= schoolMinCost * 0.9) {
-    score += 10; // Close enough (90%)
+  let budgetScore = 0;
+  if (studentBudget >= schoolMinCost && studentBudget <= schoolMaxCost) {
+    // Perfect fit: budget is within cost band
+    // Best fit is at midpoint (15 points), slightly lower at edges (13 points)
+    const distanceFromMid = Math.abs(studentBudget - schoolMidCost);
+    const bandWidth = (schoolMaxCost - schoolMinCost) / 2;
+    budgetScore = 15 - ((distanceFromMid / bandWidth) * 2);
+  } else if (studentBudget > schoolMaxCost) {
+    // Budget exceeds cost band - still good, but preference for schools that use more budget
+    // Decays from 13 to 8 as budget gets much higher than max cost
+    const excess = studentBudget - schoolMaxCost;
+    const excessRatio = excess / schoolMaxCost;
+    budgetScore = Math.max(8, 13 - (excessRatio * 5));
+  } else if (studentBudget >= schoolMinCost * 0.85) {
+    // Slightly under minimum (85-100%) - graduated penalty
+    const shortfall = schoolMinCost - studentBudget;
+    const shortfallRatio = shortfall / schoolMinCost;
+    budgetScore = 8 - (shortfallRatio * 30); // Decays from 8 to 3
   } else {
-    score += 4; // Over budget penalty
+    // Significantly over budget - larger penalty
+    const shortfall = schoolMinCost - studentBudget;
+    const shortfallRatio = shortfall / schoolMinCost;
+    budgetScore = Math.max(1, 4 - (shortfallRatio * 8));
   }
+  score += budgetScore;
 
-  // Location Match (0-18 points) - reduced from 20
+  // Location Match (0-12 points) - continuous scoring based on distance
   const distance = calculateDistance(profile.location, school.location);
   const maxRadius = profile.searchRadius;
 
-  if (distance <= maxRadius * 0.25) {
-    score += 18; // Very close
-  } else if (distance <= maxRadius * 0.5) {
-    score += 14; // Close
-  } else if (distance <= maxRadius * 0.75) {
-    score += 10; // Reasonably close
+  // Continuous decay function: closer is better
+  // Schools within radius get 12 points, decaying smoothly to 1 point at 2x radius
+  let locationScore = 0;
+  if (distance === 0) {
+    locationScore = 12; // Perfect location match or "open to relocating"
   } else if (distance <= maxRadius) {
-    score += 6; // At edge of radius
-  } else if (distance <= maxRadius * 1.5) {
-    score += 3; // Slightly outside preferred radius
+    // Linear decay from 12 to 4 within preferred radius
+    locationScore = 12 - ((distance / maxRadius) * 8);
+  } else if (distance <= maxRadius * 2) {
+    // Steeper decay from 4 to 1 beyond preferred radius
+    const excessDistance = distance - maxRadius;
+    locationScore = 4 - ((excessDistance / maxRadius) * 3);
   } else {
-    score += 1; // Too far but still listed
+    locationScore = 1; // Minimum for very distant schools
   }
+  score += locationScore;
 
-  // Training Type Match (0-8 points) - reduced from 10
+  // Training Type Match (0-6 points)
   if (profile.trainingTypePreference === 'No Preference') {
-    score += 8;
+    score += 6;
   } else if (profile.trainingTypePreference === school.trainingType) {
-    score += 8;
+    score += 6;
   } else {
-    score += 4; // Partial credit
+    score += 3; // Partial credit
   }
 
   // Preference Bonus (0-8 points) - reduced from 10
@@ -123,12 +141,119 @@ export function calculateMatchScore(profile: MatchProfile, school: MockSchool): 
     score += 2;
   }
 
-  // Add small random variation (-2 to +2) to prevent identical scores
-  const variation = Math.floor(Math.random() * 5) - 2;
+  // Quality Metrics (0-8 points) - rewards objectively high-quality schools
+  let qualityScore = 0;
+
+  // Rating quality (0-3 points)
+  if (school.avgRating) {
+    qualityScore += (school.avgRating / 5) * 3;
+  }
+
+  // Review volume credibility (0-2 points) - more reviews = more reliable rating
+  if (school.reviewCount) {
+    if (school.reviewCount > 100) qualityScore += 2;
+    else if (school.reviewCount > 50) qualityScore += 1.5;
+    else if (school.reviewCount > 20) qualityScore += 1;
+    else qualityScore += school.reviewCount / 40; // Graduated for < 20 reviews
+  }
+
+  // Instructor-to-aircraft ratio (0-1.5 points) - better ratios = more personalized training
+  if (school.instructorCount && school.fleetSize) {
+    const aircraftPerInstructor = school.fleetSize / school.instructorCount;
+    if (aircraftPerInstructor < 3) qualityScore += 1.5; // Excellent ratio
+    else if (aircraftPerInstructor < 5) qualityScore += 1;
+    else if (aircraftPerInstructor < 8) qualityScore += 0.5;
+  }
+
+  // Experience/longevity (0-1.5 points) - established schools
+  if (school.yearsInOperation) {
+    if (school.yearsInOperation > 20) qualityScore += 1.5;
+    else if (school.yearsInOperation > 10) qualityScore += 1;
+    else if (school.yearsInOperation > 5) qualityScore += 0.5;
+    else qualityScore += school.yearsInOperation / 20; // Graduated for newer schools
+  }
+
+  score += qualityScore;
+
+  // Efficiency Scoring (0-4 points) - rewards demonstrably efficient training
+  let efficiencyScore = 0;
+
+  // Hours to PPL efficiency (0-2 points) - fewer hours = more efficient
+  if (school.averageHoursToPPL) {
+    if (school.averageHoursToPPL <= 50) efficiencyScore += 2;
+    else if (school.averageHoursToPPL <= 60) efficiencyScore += 1.5;
+    else if (school.averageHoursToPPL <= 70) efficiencyScore += 1;
+    else if (school.averageHoursToPPL <= 80) efficiencyScore += 0.5;
+  }
+
+  // FSP signals if verified (0-2 points) - data-driven quality indicators
+  if (school.fspSignals) {
+    const signals = school.fspSignals;
+    efficiencyScore += (signals.scheduleConsistency / 100) * 1;
+    efficiencyScore += (signals.instructorReliability / 100) * 1;
+  }
+
+  score += efficiencyScore;
+
+  // Aircraft Preference Matching (0-3 points) - rewards schools with preferred aircraft
+  if (profile.aircraftPreference && profile.aircraftPreference !== 'No Preference') {
+    const preferenceLC = profile.aircraftPreference.toLowerCase();
+    const hasPreferredAircraft = school.fleetTypes.some(aircraft =>
+      aircraft.toLowerCase().includes(preferenceLC)
+    );
+
+    if (hasPreferredAircraft && school.fleetDetails) {
+      // Check fleet availability for preferred aircraft
+      const preferredFleet = school.fleetDetails.find(fd =>
+        fd.aircraftType.toLowerCase().includes(preferenceLC)
+      );
+
+      if (preferredFleet) {
+        // Base points for having the aircraft
+        let aircraftScore = 1;
+
+        // Bonus for availability
+        if (preferredFleet.availability === 'High') aircraftScore += 2;
+        else if (preferredFleet.availability === 'Medium') aircraftScore += 1;
+        else aircraftScore += 0.5; // Low availability
+
+        score += aircraftScore;
+      } else {
+        // Has the aircraft type but no detailed availability info
+        score += 2;
+      }
+    } else if (hasPreferredAircraft) {
+      // Has the aircraft type but no fleet details
+      score += 2;
+    }
+  }
+
+  // Add random variation (-1.5 to +1.5) to prevent identical scores
+  const variation = (Math.random() * 3) - 1.5;
   score += variation;
 
-  // Cap at 94 (never show 100% or above)
-  return Math.min(94, Math.max(50, Math.round(score)));
+  // Tie-breaking micro-adjustments (0-1 point) - ensures no duplicate scores
+  let tieBreaker = 0;
+
+  // Quality signals (0-0.5 total)
+  if (school.avgRating) tieBreaker += (school.avgRating / 100); // Max 0.05
+  if (school.reviewCount) tieBreaker += Math.min(0.15, school.reviewCount / 1000); // Max 0.15
+  if (school.yearsInOperation) tieBreaker += Math.min(0.15, school.yearsInOperation / 200); // Max 0.15
+  if (school.instructorCount) tieBreaker += Math.min(0.15, school.instructorCount / 500); // Max ~0.15
+
+  // Verification trust tier (0-0.3)
+  if (school.trustTier === 'Premier' || school.trustTier === 'Verified FSP') tieBreaker += 0.3;
+  else if (school.trustTier === 'Community-Verified') tieBreaker += 0.2;
+  else tieBreaker += 0.1;
+
+  // Fleet size (0-0.2)
+  if (school.fleetSize) tieBreaker += Math.min(0.2, school.fleetSize / 100);
+
+  score += tieBreaker;
+
+  // Cap scores at 95 (never show 100%), minimum of 60 for schools that pass basic filters
+  // Keep 2 decimal places for differentiation
+  return Number(Math.min(95, Math.max(60, score)).toFixed(2));
 }
 
 /**

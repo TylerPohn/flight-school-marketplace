@@ -11,6 +11,9 @@ aws-exports.js
 # Logs
 *.log
 
+# Zip files
+*.zip
+
 # Lambda functions
 lambda/*/node_modules
 lambda/*/scripts/node_modules

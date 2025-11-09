@@ -53,10 +53,25 @@ export interface MockSchool {
   hasFinancing: boolean;
   hasHousing: boolean;
   fleetTypes: string[];
+  fleetSize?: number; // Total aircraft count
+  fleetDetails?: {
+    aircraftType: string;
+    count: number;
+    availability: 'High' | 'Medium' | 'Low';
+  }[];
   instructorCount: number;
   averageHoursToPPL: number;
   trustTier: TrustTier;
   preferences: string[]; // school's key strengths
+  // Quality metrics for scoring
+  avgRating?: number;
+  reviewCount?: number;
+  yearsInOperation?: number;
+  fspSignals?: {
+    avgHoursToPPL: number;
+    scheduleConsistency: number;
+    instructorReliability: number;
+  };
 }
 
 export interface RankedSchool {

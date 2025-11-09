@@ -207,7 +207,7 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
                         }}
                       >
                         <Typography variant="h2" fontWeight="bold" sx={{ color: getScoreColor(matchScore) }}>
-                          {matchScore}%
+                          {Math.round(matchScore)}%
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }} gutterBottom>
                           Match Score
