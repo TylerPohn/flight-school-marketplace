@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -18,6 +19,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  CircularProgress,
 } from '@mui/material';
 import {
   ArrowBack,
@@ -30,12 +32,41 @@ import {
 import { Breadcrumb } from '../components/Breadcrumb';
 import { ReviewCard } from '../components/ReviewCard';
 import { EvidencePanel } from '../components/EvidencePanel';
-import { getDetailedSchoolById } from '../mock/detailedSchools';
+import { getSchoolById } from '../services/schoolsApi';
+import type { DetailedSchool } from '../mock/detailedSchools';
 
 export function SchoolProfilePage() {
   const { schoolId } = useParams<{ schoolId: string }>();
   const navigate = useNavigate();
-  const school = schoolId ? getDetailedSchoolById(schoolId) : undefined;
+  const [school, setSchool] = useState<DetailedSchool | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!schoolId) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    getSchoolById(schoolId)
+      .then(data => {
+        setSchool(data);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching school:', error);
+        setSchool(null);
+        setLoading(false);
+      });
+  }, [schoolId]);
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 8, display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   if (!school) {
     return (
@@ -90,7 +121,7 @@ export function SchoolProfilePage() {
             <Box sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
               <LocationOn sx={{ mr: 0.5 }} />
               <Typography variant="h6">
-                {school.location.city}, {school.location.state}
+                {(school as any).location?.city || (school as any).city}, {(school as any).location?.state || (school as any).state}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

@@ -2,7 +2,7 @@ import React, { createContext, useState, useCallback, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { School } from '../types/school';
-import { getSchoolsByIds } from '../mock/schools';
+import { getSchoolsByIds, convertToSimpleSchool } from '../services/schoolsApi';
 
 interface ComparisonContextType {
   selectedSchools: School[];
@@ -22,6 +22,7 @@ interface ComparisonProviderProps {
 
 export const ComparisonProvider: React.FC<ComparisonProviderProps> = ({ children }) => {
   const [selectedSchoolIds, setSelectedSchoolIds] = useState<string[]>([]);
+  const [selectedSchools, setSelectedSchools] = useState<School[]>([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const maxCount = 4;
 
@@ -46,7 +47,22 @@ export const ComparisonProvider: React.FC<ComparisonProviderProps> = ({ children
     }
   }, [selectedSchoolIds]);
 
-  const selectedSchools = getSchoolsByIds(selectedSchoolIds);
+  // Fetch schools when IDs change
+  useEffect(() => {
+    if (selectedSchoolIds.length > 0) {
+      getSchoolsByIds(selectedSchoolIds)
+        .then(detailedSchools => {
+          const simpleSchools = detailedSchools.map(convertToSimpleSchool);
+          setSelectedSchools(simpleSchools);
+        })
+        .catch(error => {
+          console.error('Error fetching comparison schools:', error);
+          setSelectedSchools([]);
+        });
+    } else {
+      setSelectedSchools([]);
+    }
+  }, [selectedSchoolIds]);
 
   const addSchool = useCallback((schoolId: string): boolean => {
     if (selectedSchoolIds.length >= maxCount) {

@@ -5,14 +5,32 @@
  * Displays filter panel on the left and school listings on the right.
  */
 
-import { Container, Typography, Box } from '@mui/material';
-import { mockSchools } from '../mock/schools';
+import { useState, useEffect } from 'react';
+import { Container, Typography, Box, CircularProgress } from '@mui/material';
+import { getAllSchools, convertToSimpleSchool } from '../services/schoolsApi';
 import { SchoolCard } from '../components/SchoolCard';
 import { SchoolFiltersComponent } from '../components/SchoolFilters';
 import { useSchoolFilters } from '../hooks/useSchoolFilters';
 
 export function SchoolListingPage() {
-  // Initialize filter hook with mock school data
+  const [schools, setSchools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllSchools()
+      .then(detailedSchools => {
+        const simpleSchools = detailedSchools.map(convertToSimpleSchool);
+        setSchools(simpleSchools);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching schools:', error);
+        setSchools([]);
+        setLoading(false);
+      });
+  }, []);
+
+  // Initialize filter hook with API school data
   const {
     filters,
     updateFilter,
@@ -21,7 +39,15 @@ export function SchoolListingPage() {
     activeFilterCount,
     availableStates,
     availablePrograms,
-  } = useSchoolFilters(mockSchools);
+  } = useSchoolFilters(schools);
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl" sx={{ py: 8, display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
@@ -45,7 +71,7 @@ export function SchoolListingPage() {
             availableStates={availableStates}
             availablePrograms={availablePrograms}
             filteredCount={filteredSchools.length}
-            totalCount={mockSchools.length}
+            totalCount={schools.length}
           />
         </Box>
 
@@ -63,9 +89,9 @@ export function SchoolListingPage() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              {filteredSchools.length === mockSchools.length
+              {filteredSchools.length === schools.length
                 ? `Showing all ${filteredSchools.length} schools`
-                : `Found ${filteredSchools.length} of ${mockSchools.length} schools`}
+                : `Found ${filteredSchools.length} of ${schools.length} schools`}
             </Typography>
           </Box>
 

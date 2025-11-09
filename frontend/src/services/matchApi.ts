@@ -44,11 +44,16 @@ export interface ExplainMatchResponse {
  * Falls back to null if API unavailable (caller should use template)
  */
 export async function getAIExplanation(request: ExplainMatchRequest): Promise<string | null> {
+  // Debug logging
+  console.log('getAIExplanation called - API_BASE_URL:', API_BASE_URL);
+
   // If no API URL configured, return null (use template fallback)
   if (!API_BASE_URL) {
     console.warn('VITE_MATCH_API_URL not configured - using template explanations');
     return null;
   }
+
+  console.log('Fetching AI explanation for:', request.school.name);
 
   try {
     const response = await fetch(`${API_BASE_URL}/explain-match`, {

@@ -14,11 +14,12 @@ import {
   Alert,
   Button,
   Snackbar,
+  CircularProgress,
 } from '@mui/material';
 import { CompareArrows } from '@mui/icons-material';
 import { useSearchParams, Link as RouterLink, useNavigate } from 'react-router-dom';
 import type { School, TrustTier } from '../types/school';
-import { getSchoolsByIds } from '../mock/schools';
+import { getSchoolsByIds, convertToSimpleSchool } from '../services/schoolsApi';
 
 const trustTierLabels: Record<TrustTier, string> = {
   Premier: 'Premier',
@@ -51,6 +52,7 @@ export const ComparisonPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [schools, setSchools] = useState<School[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showNotification, setShowNotification] = useState(false);
 
@@ -80,25 +82,36 @@ export const ComparisonPage: React.FC = () => {
       setError('Maximum 4 schools can be compared. Showing first 4.');
     }
 
-    const selectedSchools = getSchoolsByIds(schoolIds.slice(0, 4));
-    
-    if (selectedSchools.length === 0) {
-      setError('No valid schools found. Please return to the directory.');
-      return;
-    }
+    setLoading(true);
+    getSchoolsByIds(schoolIds.slice(0, 4))
+      .then(detailedSchools => {
+        const simpleSchools = detailedSchools.map(convertToSimpleSchool);
 
-    if (selectedSchools.length < schoolIds.length) {
-      setError('Some schools could not be found.');
-    }
+        if (simpleSchools.length === 0) {
+          setError('No valid schools found. Please return to the directory.');
+          setLoading(false);
+          return;
+        }
 
-    setSchools(selectedSchools);
+        if (simpleSchools.length < schoolIds.length) {
+          setError('Some schools could not be found.');
+        }
+
+        setSchools(simpleSchools);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching comparison schools:', error);
+        setError('Failed to load schools for comparison.');
+        setLoading(false);
+      });
   }, [searchParams]);
 
 
   const comparisonRows: ComparisonRow[] = [
     {
       label: 'Location',
-      getValue: (school) => `${school.location.city}, ${school.location.state}`,
+      getValue: (school) => `${(school as any).location?.city || (school as any).city}, ${(school as any).location?.state || (school as any).state}`,
     },
     {
       label: 'Trust Tier',
@@ -216,6 +229,22 @@ export const ComparisonPage: React.FC = () => {
       },
     }
   );
+
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          background: 'linear-gradient(135deg, #1a1f2e 0%, #252d3d 50%, #2f3947 100%)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <CircularProgress sx={{ color: '#fff' }} />
+      </Box>
+    );
+  }
 
   if (error && schools.length === 0) {
     return (

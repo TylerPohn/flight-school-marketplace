@@ -123,7 +123,7 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <LocationOn fontSize="small" color="action" />
                           <Typography variant="body2">
-                            {school.location.city}, {school.location.state}
+                            {(school as any).location?.city || (school as any).city}, {(school as any).location?.state || (school as any).state}
                           </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

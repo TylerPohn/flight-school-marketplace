@@ -1,11 +1,42 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link as RouterLink } from 'react-router-dom';
-import { Container, Typography, Button, Alert } from '@mui/material';
-import { getSchoolById } from '../mock/schools';
+import { Container, Typography, Button, Alert, CircularProgress, Box } from '@mui/material';
+import { getSchoolById, convertToSimpleSchool } from '../services/schoolsApi';
 
 export const SchoolProfile: React.FC = () => {
   const { schoolId } = useParams<{ schoolId: string }>();
-  const school = schoolId ? getSchoolById(schoolId) : undefined;
+  const [school, setSchool] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!schoolId) {
+      setLoading(false);
+      return;
+    }
+
+    getSchoolById(schoolId)
+      .then(detailedSchool => {
+        if (detailedSchool) {
+          setSchool(convertToSimpleSchool(detailedSchool));
+        }
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching school:', error);
+        setSchool(null);
+        setLoading(false);
+      });
+  }, [schoolId]);
+
+  if (loading) {
+    return (
+      <Container maxWidth="lg" sx={{ py: 8 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Box>
+      </Container>
+    );
+  }
 
   if (!school) {
     return (
@@ -26,7 +57,7 @@ export const SchoolProfile: React.FC = () => {
         {school.name}
       </Typography>
       <Typography variant="body1" color="text.secondary" paragraph>
-        {school.location.city}, {school.location.state}
+        {(school as any).location?.city || (school as any).city}, {(school as any).location?.state || (school as any).state}
       </Typography>
       <Alert severity="info" sx={{ mb: 2 }}>
         This is a placeholder profile page. Full implementation coming in PR-3.

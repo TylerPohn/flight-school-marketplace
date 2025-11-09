@@ -119,7 +119,7 @@ export const SchoolCard: React.FC<SchoolCardProps> = ({ school, gradientIndex = 
         </Typography>
 
         <Typography variant="body2" color="text.secondary" gutterBottom>
-          {school.location.city}, {school.location.state}
+          {school.location?.city || (school as any).city}, {school.location?.state || (school as any).state}
         </Typography>
 
         <Box sx={{ mt: 2, mb: 2 }}>

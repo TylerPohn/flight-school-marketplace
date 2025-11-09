@@ -1,13 +1,31 @@
-import React from 'react';
-import { Container, Typography, Box } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Container, Typography, Box, CircularProgress } from '@mui/material';
 import { School as SchoolIcon } from '@mui/icons-material';
 import { SchoolCard } from '../components/SchoolCard';
 import { SchoolFiltersComponent } from '../components/SchoolFilters';
 import { useSchoolFilters } from '../hooks/useSchoolFilters';
-import { mockSchools } from '../mock/schools';
+import { getAllSchools, convertToSimpleSchool } from '../services/schoolsApi';
 
 export const SchoolDirectory: React.FC = () => {
-  // Initialize filter hook with mock school data
+  const [schools, setSchools] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getAllSchools()
+      .then(detailedSchools => {
+        // Convert DetailedSchool[] to School[] format for compatibility
+        const simpleSchools = detailedSchools.map(convertToSimpleSchool);
+        setSchools(simpleSchools);
+        setLoading(false);
+      })
+      .catch(error => {
+        console.error('Error fetching schools:', error);
+        setSchools([]);
+        setLoading(false);
+      });
+  }, []);
+
+  // Initialize filter hook with API school data
   const {
     filters,
     updateFilter,
@@ -16,7 +34,7 @@ export const SchoolDirectory: React.FC = () => {
     activeFilterCount,
     availableStates,
     availablePrograms,
-  } = useSchoolFilters(mockSchools);
+  } = useSchoolFilters(schools);
 
   return (
     <Box
@@ -102,28 +120,33 @@ export const SchoolDirectory: React.FC = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-          {/* Left Column: Filters */}
-          <Box sx={{ flex: { md: '0 0 300px' } }}>
-            <SchoolFiltersComponent
-              filters={filters}
-              onSearchChange={(query) => updateFilter('searchQuery', query)}
-              onProgramTypesChange={(programs) => updateFilter('programTypes', programs)}
-              onTrainingTypeChange={(type) => updateFilter('trainingType', type)}
-              onBudgetRangeChange={(range) => updateFilter('budgetRange', range)}
-              onStateChange={(state) => updateFilter('selectedState', state)}
-              onSortChange={(sortBy) => updateFilter('sortBy', sortBy)}
-              onClearAll={clearAllFilters}
-              activeFilterCount={activeFilterCount}
-              availableStates={availableStates}
-              availablePrograms={availablePrograms}
-              filteredCount={filteredSchools.length}
-              totalCount={mockSchools.length}
-            />
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+            <CircularProgress sx={{ color: '#fff' }} />
           </Box>
+        ) : (
+          <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+            {/* Left Column: Filters */}
+            <Box sx={{ flex: { md: '0 0 300px' } }}>
+              <SchoolFiltersComponent
+                filters={filters}
+                onSearchChange={(query) => updateFilter('searchQuery', query)}
+                onProgramTypesChange={(programs) => updateFilter('programTypes', programs)}
+                onTrainingTypeChange={(type) => updateFilter('trainingType', type)}
+                onBudgetRangeChange={(range) => updateFilter('budgetRange', range)}
+                onStateChange={(state) => updateFilter('selectedState', state)}
+                onSortChange={(sortBy) => updateFilter('sortBy', sortBy)}
+                onClearAll={clearAllFilters}
+                activeFilterCount={activeFilterCount}
+                availableStates={availableStates}
+                availablePrograms={availablePrograms}
+                filteredCount={filteredSchools.length}
+                totalCount={schools.length}
+              />
+            </Box>
 
-          {/* Right Column: School Cards */}
-          <Box sx={{ flex: 1 }}>
+            {/* Right Column: School Cards */}
+            <Box sx={{ flex: 1 }}>
             {filteredSchools.length > 0 ? (
               <Box
                 sx={{
@@ -168,8 +191,9 @@ export const SchoolDirectory: React.FC = () => {
                 </Typography>
               </Box>
             )}
+            </Box>
           </Box>
-        </Box>
+        )}
       </Container>
     </Box>
   );

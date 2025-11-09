@@ -1,5 +1,13 @@
 .env
 
+# Logs
+*.log
+
 # Lambda functions
 lambda/*/node_modules
+lambda/*/scripts/node_modules
 lambda/*/function.zip
+lambda/*.zip
+lambda/*/package
+lambda/*/package-lock.json
+lambda/*/scripts/package-lock.json
