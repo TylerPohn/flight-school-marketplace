@@ -141,10 +141,10 @@ export function AIMatchingPage() {
       ...stepFourForm.getValues(),
     } as MatchProfile;
 
-    // Submit questionnaire
-    submitQuestionnaire(finalData);
+    // Submit questionnaire (async - fetches AI explanations)
+    await submitQuestionnaire(finalData);
 
-    // Navigate to results page after AI matching animation (4 seconds)
+    // Navigate to results page after AI matching animation (minimum 4 seconds)
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/find-my-school/results');

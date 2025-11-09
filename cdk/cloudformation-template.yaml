@@ -1,0 +1,159 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Flight School Match Explainer - Lambda + API Gateway with Bedrock
+
+Resources:
+  # IAM Role for Lambda
+  MatchExplainerLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: FlightSchoolMatchExplainerRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: BedrockAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - bedrock:InvokeModel
+                Resource:
+                  - arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0
+
+  # Lambda Function
+  MatchExplainerFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: FlightSchoolMatchExplainer
+      Runtime: nodejs18.x
+      Handler: index.handler
+      Role: !GetAtt MatchExplainerLambdaRole.Arn
+      Code:
+        ZipFile: |
+          // Placeholder - you need to upload the actual code from /lambda/match-explainer/
+          exports.handler = async (event) => {
+            return {
+              statusCode: 200,
+              body: JSON.stringify({ message: 'Replace with actual code' })
+            };
+          };
+      Timeout: 30
+      MemorySize: 512
+      Environment:
+        Variables:
+          NODE_OPTIONS: '--enable-source-maps'
+
+  # API Gateway REST API
+  MatchExplainerApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: FlightSchoolMatchExplainerAPI
+      Description: API for AI-powered flight school match explanations
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+
+  # API Gateway Resource
+  ExplainMatchResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref MatchExplainerApi
+      ParentId: !GetAtt MatchExplainerApi.RootResourceId
+      PathPart: explain-match
+
+  # API Gateway Method - POST
+  ExplainMatchMethodPost:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref MatchExplainerApi
+      ResourceId: !Ref ExplainMatchResource
+      HttpMethod: POST
+      AuthorizationType: NONE
+      Integration:
+        Type: AWS_PROXY
+        IntegrationHttpMethod: POST
+        Uri: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MatchExplainerFunction.Arn}/invocations
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Origin: true
+
+  # API Gateway Method - OPTIONS (CORS)
+  ExplainMatchMethodOptions:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref MatchExplainerApi
+      ResourceId: !Ref ExplainMatchResource
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,Authorization'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ''
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+
+  # API Gateway Deployment
+  ApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:
+      - ExplainMatchMethodPost
+      - ExplainMatchMethodOptions
+    Properties:
+      RestApiId: !Ref MatchExplainerApi
+      StageName: prod
+
+  # Lambda Permission for API Gateway
+  ApiGatewayInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref MatchExplainerFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${MatchExplainerApi}/*/*/*
+
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value: !Sub https://${MatchExplainerApi}.execute-api.${AWS::Region}.amazonaws.com/prod/
+    Export:
+      Name: MatchExplainerApiEndpoint
+
+  ApiUrl:
+    Description: Full API URL for match explanations
+    Value: !Sub https://${MatchExplainerApi}.execute-api.${AWS::Region}.amazonaws.com/prod/explain-match
+    Export:
+      Name: MatchExplainerFullUrl
+
+  LambdaFunctionName:
+    Description: Lambda function name
+    Value: !Ref MatchExplainerFunction
+    Export:
+      Name: MatchExplainerFunctionName
+
+  LambdaFunctionArn:
+    Description: Lambda function ARN
+    Value: !GetAtt MatchExplainerFunction.Arn
+
+  VercelEnvVar:
+    Description: Add this to Vercel environment variables
+    Value: !Sub VITE_MATCH_API_URL=https://${MatchExplainerApi}.execute-api.${AWS::Region}.amazonaws.com/prod

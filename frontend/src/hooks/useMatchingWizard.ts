@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import type { MatchProfile, RankedSchool } from '../types/matchProfile';
-import { rankSchools } from '../utils/mockAIMatching';
+import { rankSchoolsWithAI } from '../utils/mockAIMatching';
 import { MOCK_SCHOOLS } from '../mock/mockSchools';
 
 export function useMatchingWizard() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState<Partial<MatchProfile>>({});
   const [results, setResults] = useState<RankedSchool[] | null>(null);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
 
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, 3));
@@ -20,17 +21,23 @@ export function useMatchingWizard() {
     setFormData((prev) => ({ ...prev, ...data }));
   };
 
-  const submitQuestionnaire = (finalData: MatchProfile) => {
+  const submitQuestionnaire = async (finalData: MatchProfile) => {
     // Update form data with final step
     setFormData(finalData);
 
-    // Calculate rankings
-    const rankedResults = rankSchools(finalData, MOCK_SCHOOLS);
+    setIsLoadingAI(true);
 
-    // Store results
-    setResults(rankedResults);
+    try {
+      // Calculate rankings with AI explanations for top 5
+      const rankedResults = await rankSchoolsWithAI(finalData, MOCK_SCHOOLS);
 
-    return rankedResults;
+      // Store results
+      setResults(rankedResults);
+
+      return rankedResults;
+    } finally {
+      setIsLoadingAI(false);
+    }
   };
 
   const reset = () => {
@@ -43,6 +50,7 @@ export function useMatchingWizard() {
     currentStep,
     formData,
     results,
+    isLoadingAI,
     nextStep,
     prevStep,
     updateFormData,

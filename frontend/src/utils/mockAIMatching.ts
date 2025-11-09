@@ -1,4 +1,5 @@
 import type { MatchProfile, MockSchool, RankedSchool, Location } from '../types/matchProfile';
+import { getAIExplanation } from '../services/matchApi';
 
 /**
  * Calculate distance between two points using Haversine formula
@@ -223,4 +224,66 @@ export function generateMatchExplanation(
 
   // Fallback for low scores
   return `${school.name} in ${schoolLocation} offers ${goal} training with a ${school.trainingType} program. While it may not perfectly match all your criteria (${distance} miles away, $${schoolMin.toLocaleString()}-${schoolMax.toLocaleString()} cost range), it has ${school.instructorCount} instructors and a solid reputation. Consider reaching out to learn more about how they can support your aviation goals.`;
+}
+
+/**
+ * Enhanced async version of rankSchools that uses AI explanations for top 5 results
+ * Falls back to template explanations if API is unavailable
+ */
+export async function rankSchoolsWithAI(profile: MatchProfile, schools: MockSchool[]): Promise<RankedSchool[]> {
+  // First, get all rankings with template explanations (synchronous)
+  const rankedSchools = rankSchools(profile, schools);
+
+  // Get AI explanations for top 5 results only
+  const top5 = rankedSchools.slice(0, 5);
+
+  // Fetch AI explanations in parallel
+  const aiExplanationPromises = top5.map(async (rankedSchool) => {
+    try {
+      const aiExplanation = await getAIExplanation({
+        student: {
+          trainingGoal: profile.trainingGoal,
+          maxBudget: profile.maxBudget,
+          location: {
+            city: profile.location.city,
+            state: profile.location.state,
+            lat: profile.location.lat,
+            lon: profile.location.lon,
+          },
+          trainingTypePreference: profile.trainingTypePreference,
+          priorExperience: profile.priorExperience,
+        },
+        school: {
+          name: rankedSchool.school.name,
+          location: {
+            city: rankedSchool.school.location.city,
+            state: rankedSchool.school.location.state,
+            lat: rankedSchool.school.location.lat,
+            lon: rankedSchool.school.location.lon,
+          },
+          costBand: rankedSchool.school.costBand,
+          primaryProgram: rankedSchool.school.primaryProgram,
+          instructorCount: rankedSchool.school.instructorCount,
+          trainingType: rankedSchool.school.trainingType,
+        },
+        matchScore: rankedSchool.matchScore,
+      });
+
+      // If AI explanation was retrieved, use it; otherwise keep template
+      if (aiExplanation) {
+        return { ...rankedSchool, explanation: aiExplanation };
+      }
+      return rankedSchool;
+    } catch (error) {
+      console.error('Error fetching AI explanation for', rankedSchool.school.name, error);
+      return rankedSchool; // Keep template explanation on error
+    }
+  });
+
+  // Wait for all AI explanations
+  const enhancedTop5 = await Promise.all(aiExplanationPromises);
+
+  // Combine enhanced top 5 with remaining results (6-10)
+  const remaining = rankedSchools.slice(5);
+  return [...enhancedTop5, ...remaining];
 }
