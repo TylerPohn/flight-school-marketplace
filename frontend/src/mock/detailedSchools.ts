@@ -2063,7 +2063,7 @@ export const detailedMockSchools: DetailedSchool[] = [
     programs: ['PPL', 'IR', 'CPL'],
     costBand: { min: 13200, max: 49000 },
     trainingType: 'Part61',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: 'COMMUNITY_VERIFIED' as TrustTier,
     description: `Atlanta Flight Training offers personalized flight instruction in the heart of Georgia's aviation community. Operating from DeKalb-Peachtree Airport, we specialize in Part 61 training that adapts to your schedule and learning style. Our experienced instructors bring real-world airline and corporate aviation backgrounds to every lesson.
 
 With a modern fleet of well-maintained aircraft and a flexible training approach, we've helped hundreds of students achieve their aviation goals since 2012. Whether you're starting your private pilot journey or building commercial hours, our program balances thorough ground instruction with hands-on flight experience.
@@ -2121,7 +2121,7 @@ Our location provides ideal training conditions year-round, with diverse airspac
       {
         id: 'instr-122',
         name: 'Jennifer Wu',
-        certificates: ['CFI', 'CFII', 'AGI'],
+        certificates: ['CFI', 'CFII'],
         yearsExperience: 7,
         bio: 'Jennifer brings a background in aerospace engineering to her instruction, helping students understand the "why" behind every maneuver. She excels at teaching complex airspace operations and is known for her thorough ground instruction. Her students consistently pass checkrides on the first attempt.',
         photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop'
@@ -2241,7 +2241,7 @@ Our location provides ideal training conditions year-round, with diverse airspac
     programs: ['PPL', 'IR', 'CPL', 'ATPL'],
     costBand: { min: 16500, max: 62000 },
     trainingType: 'Part141',
-    trustTier: TrustTier.PREMIER,
+    trustTier: 'PREMIER' as TrustTier,
     description: `New York Aviation Center stands as one of the Northeast's premier flight training academies, offering FAA Part 141 approved programs designed to the highest standards. Based at LaGuardia Airport, we provide students with unparalleled exposure to professional aviation operations in the world's busiest airspace. Our structured curriculum and modern fleet ensure efficient, high-quality training that meets airline hiring standards.
 
 Since 2005, we've graduated over 2,000 pilots who now fly for major airlines, corporate operators, and charter companies worldwide. Our Part 141 certification means every aspect of our training is FAA-approved and continuously monitored for quality. With a 98% first-time checkride pass rate and direct partnerships with regional airlines, we offer the fastest path from zero time to airline cockpit.
@@ -2428,7 +2428,7 @@ Our 35,000 square foot training facility features state-of-the-art simulators, d
     programs: ['PPL', 'IR', 'CPL'],
     costBand: { min: 12800, max: 47500 },
     trainingType: 'Part61',
-    trustTier: TrustTier.COMMUNITY_VERIFIED,
+    trustTier: 'COMMUNITY_VERIFIED' as TrustTier,
     description: `Kansas City Flight School has been a cornerstone of aviation training in the Kansas City metro area for over two decades. Operating under Part 61 regulations, we provide personalized, flexible flight training that adapts to your schedule and learning pace. Our approach emphasizes one-on-one instruction with experienced CFIs who are dedicated to helping you achieve your aviation goals efficiently and safely.\n\nLocated at Charles B. Wheeler Downtown Airport, our facility offers convenient access to both controlled and uncontrolled airspace, providing diverse training environments. Our students benefit from the moderate weather conditions of the Midwest, allowing for consistent year-round training. We pride ourselves on maintaining a well-equipped fleet and fostering a tight-knit community of pilots who support each other throughout their aviation journey.\n\nWhether you're pursuing your private pilot certificate or advancing to commercial privileges, Kansas City Flight School combines affordability with quality instruction. Our community-verified status reflects our commitment to transparency and student success, with graduates consistently praising our practical, no-nonsense approach to flight training.`,
     yearsInOperation: 23,
     facilities: [
@@ -2498,7 +2498,7 @@ Our 35,000 square foot training facility features state-of-the-art simulators, d
       {
         id: 'instr-144',
         name: 'Sarah Wilson',
-        certificates: ['CFI', 'CFI-Sport'],
+        certificates: ['CFI'],
         yearsExperience: 5,
         bio: 'Sarah is one of our newest instructors but brings tremendous enthusiasm and modern teaching techniques to the team. As a recent commercial pilot graduate herself, she understands the challenges students face and provides relatable, practical advice. Her specialty is primary training and she has a 98% first-time checkride pass rate.',
         photoUrl: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop'
@@ -2602,7 +2602,7 @@ Our 35,000 square foot training facility features state-of-the-art simulators, d
     programs: ['PPL', 'IR', 'CPL', 'ATPL'],
     costBand: { min: 17200, max: 68000 },
     trainingType: 'Part141',
-    trustTier: TrustTier.PREMIER,
+    trustTier: 'PREMIER' as TrustTier,
     description: `San Francisco Sky Academy stands as one of the Bay Area's premier flight training institutions, holding FAA Part 141 certification and maintaining the highest standards in aviation education. With state-of-the-art facilities at San Francisco International Airport, we offer a comprehensive training environment that prepares students for professional aviation careers. Our structured curriculum and rigorous standards have produced hundreds of airline and corporate pilots who fly worldwide.\n\nAs a Premier-tier institution, we undergo continuous third-party auditing and maintain transparent operations verified by independent aviation safety organizations. Our fleet of 22 modern aircraft represents one of the largest and most diverse training fleets on the West Coast, featuring advanced avionics and impeccably maintained airframes. Students benefit from training in the challenging San Francisco Bay Area airspace, gaining experience with complex weather patterns, busy Class B operations, and sophisticated air traffic procedures.\n\nOur distinguished faculty includes former airline captains, military aviators, and career flight instructors who bring decades of combined experience. We offer accelerated training programs, veteran benefits, and pathway programs with regional airlines. From your first discovery flight through ATP certification, San Francisco Sky Academy provides the professional training environment and career support needed to succeed in competitive aviation markets.`,
     yearsInOperation: 31,
     facilities: [
@@ -2665,7 +2665,7 @@ Our 35,000 square foot training facility features state-of-the-art simulators, d
       {
         id: 'instr-146',
         name: 'Dr. Elena Rodriguez',
-        certificates: ['CFI', 'CFII', 'MEI', 'Gold Seal Instructor'],
+        certificates: ['CFI', 'CFII', 'MEI'],
         yearsExperience: 15,
         bio: 'Dr. Rodriguez holds a Ph.D. in Aviation Education and has been recognized as a Master Flight Instructor by the National Association of Flight Instructors. She designed our Part 141 curriculum and leads our ground school program. Her systematic teaching methodology and emphasis on aeronautical decision-making have set new standards for flight training excellence.',
         photoUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop'
