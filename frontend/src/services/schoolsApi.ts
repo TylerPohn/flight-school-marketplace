@@ -82,6 +82,30 @@ export async function getSchoolsByIds(ids: string[]): Promise<DetailedSchool[]> 
 }
 
 /**
+ * Normalize trust tier values to the standard format
+ * Handles both old display names and new constants
+ */
+function normalizeTrustTier(trustTier: string | undefined): string {
+  if (!trustTier) return 'UNVERIFIED';
+
+  // Map old display names to new constants
+  const mapping: Record<string, string> = {
+    'Premier': 'PREMIER',
+    'Verified FSP': 'VERIFIED_FSP',
+    'Community-Verified': 'COMMUNITY_VERIFIED',
+    'Community': 'COMMUNITY_VERIFIED',
+    'Unverified': 'UNVERIFIED',
+    // Already normalized values pass through
+    'PREMIER': 'PREMIER',
+    'VERIFIED_FSP': 'VERIFIED_FSP',
+    'COMMUNITY_VERIFIED': 'COMMUNITY_VERIFIED',
+    'UNVERIFIED': 'UNVERIFIED',
+  };
+
+  return mapping[trustTier] || 'UNVERIFIED';
+}
+
+/**
  * Transform DetailedSchool to the simpler School format used in some components
  * This maintains backward compatibility with existing code
  */
@@ -93,6 +117,10 @@ export function convertToSimpleSchool(detailedSchool: any): any {
   const city = detailedSchool.location?.city || detailedSchool.city || '';
   const state = detailedSchool.location?.state || detailedSchool.state || '';
   const zipCode = detailedSchool.location?.zipCode || detailedSchool.zipCode || '';
+
+  // Get trust tier from either root level or verificationDetails, then normalize
+  const rawTrustTier = detailedSchool.trustTier || detailedSchool.verificationDetails?.trustTier;
+  const trustTier = normalizeTrustTier(rawTrustTier);
 
   return {
     id: detailedSchool.schoolId,
@@ -111,8 +139,10 @@ export function convertToSimpleSchool(detailedSchool: any): any {
       ir: detailedSchool.costBand?.min || 0,
       cpl: detailedSchool.costBand?.min || 0
     },
+    estimatedHoursToPPL: detailedSchool.estimatedHoursToPPL || 0,
     instructorCount: detailedSchool.instructorCount || 0,
-    trustTier: detailedSchool.trustTier || detailedSchool.verificationDetails?.trustTier,
+    financingAvailable: detailedSchool.financingAvailable || false,
+    trustTier: trustTier,
     rating: {
       score: detailedSchool.avgRating || 0,
       reviewCount: detailedSchool.reviewCount || 0

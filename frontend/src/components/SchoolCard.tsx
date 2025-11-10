@@ -18,17 +18,17 @@ interface SchoolCardProps {
 }
 
 const trustTierColors: Record<string, 'success' | 'primary' | 'default' | 'warning'> = {
-  Premier: 'success',
-  VerifiedFSP: 'primary',
-  Community: 'default',
-  Unverified: 'warning',
+  PREMIER: 'success',
+  VERIFIED_FSP: 'primary',
+  COMMUNITY_VERIFIED: 'default',
+  UNVERIFIED: 'warning',
 };
 
 const trustTierLabels: Record<string, string> = {
-  Premier: 'Premier',
-  VerifiedFSP: 'Verified FSP',
-  Community: 'Community',
-  Unverified: 'Unverified',
+  PREMIER: 'Premier',
+  VERIFIED_FSP: 'Verified FSP',
+  COMMUNITY_VERIFIED: 'Community-Verified',
+  UNVERIFIED: 'Unverified',
 };
 
 export const SchoolCard: React.FC<SchoolCardProps> = ({ school, gradientIndex = 0 }) => {
@@ -123,17 +123,21 @@ export const SchoolCard: React.FC<SchoolCardProps> = ({ school, gradientIndex = 
         </Typography>
 
         <Box sx={{ mt: 2, mb: 2 }}>
-          <Chip
-            label={trustTierLabels[school.trustTier]}
-            color={trustTierColors[school.trustTier]}
-            size="small"
-            sx={{ mr: 1 }}
-          />
-          <Chip
-            label={school.trainingType === 'Part141' ? 'Part 141' : 'Part 61'}
-            size="small"
-            variant="outlined"
-          />
+          {school.trustTier && trustTierLabels[school.trustTier] && (
+            <Chip
+              label={trustTierLabels[school.trustTier]}
+              color={trustTierColors[school.trustTier] || 'default'}
+              size="small"
+              sx={{ mr: 1 }}
+            />
+          )}
+          {school.trainingType && (
+            <Chip
+              label={school.trainingType === 'Part141' ? 'Part 141' : 'Part 61'}
+              size="small"
+              variant="outlined"
+            />
+          )}
         </Box>
 
         <Typography variant="body2" gutterBottom>

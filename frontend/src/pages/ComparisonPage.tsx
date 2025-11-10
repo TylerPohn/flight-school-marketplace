@@ -22,24 +22,24 @@ import type { School, TrustTier } from '../types/school';
 import { getSchoolsByIds, convertToSimpleSchool } from '../services/schoolsApi';
 
 const trustTierLabels: Record<TrustTier, string> = {
-  Premier: 'Premier',
-  VerifiedFSP: 'Verified FSP',
-  Community: 'Community',
-  Unverified: 'Unverified',
+  PREMIER: 'Premier',
+  VERIFIED_FSP: 'Verified FSP',
+  COMMUNITY_VERIFIED: 'Community-Verified',
+  UNVERIFIED: 'Unverified',
 };
 
 const trustTierColors: Record<TrustTier, 'success' | 'primary' | 'default' | 'warning'> = {
-  Premier: 'success',
-  VerifiedFSP: 'primary',
-  Community: 'default',
-  Unverified: 'warning',
+  PREMIER: 'success',
+  VERIFIED_FSP: 'primary',
+  COMMUNITY_VERIFIED: 'default',
+  UNVERIFIED: 'warning',
 };
 
 const trustTierRank: Record<TrustTier, number> = {
-  Premier: 4,
-  VerifiedFSP: 3,
-  Community: 2,
-  Unverified: 1,
+  PREMIER: 4,
+  VERIFIED_FSP: 3,
+  COMMUNITY_VERIFIED: 2,
+  UNVERIFIED: 1,
 };
 
 interface ComparisonRow {

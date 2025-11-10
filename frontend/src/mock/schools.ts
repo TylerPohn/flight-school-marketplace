@@ -21,7 +21,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 65,
     instructorCount: 18,
     financingAvailable: true,
-    trustTier: 'VerifiedFSP',
+    trustTier: 'VERIFIED_FSP',
     rating: {
       score: 4.5,
       reviewCount: 23
@@ -46,7 +46,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 72,
     instructorCount: 10,
     financingAvailable: true,
-    trustTier: 'Unverified',
+    trustTier: 'UNVERIFIED',
     rating: {
       score: 4.2,
       reviewCount: 18
@@ -72,7 +72,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 60,
     instructorCount: 22,
     financingAvailable: false,
-    trustTier: 'Community',
+    trustTier: 'COMMUNITY_VERIFIED',
     rating: {
       score: 4.7,
       reviewCount: 31
@@ -98,7 +98,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 58,
     instructorCount: 28,
     financingAvailable: true,
-    trustTier: 'Premier',
+    trustTier: 'PREMIER',
     rating: {
       score: 4.8,
       reviewCount: 45
@@ -123,7 +123,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 68,
     instructorCount: 8,
     financingAvailable: false,
-    trustTier: 'Community',
+    trustTier: 'COMMUNITY_VERIFIED',
     rating: {
       score: 4.4,
       reviewCount: 12
@@ -149,7 +149,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 62,
     instructorCount: 16,
     financingAvailable: true,
-    trustTier: 'VerifiedFSP',
+    trustTier: 'VERIFIED_FSP',
     rating: {
       score: 4.6,
       reviewCount: 28
@@ -175,7 +175,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 63,
     instructorCount: 14,
     financingAvailable: true,
-    trustTier: 'Premier',
+    trustTier: 'PREMIER',
     rating: {
       score: 4.7,
       reviewCount: 36
@@ -200,7 +200,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 70,
     instructorCount: 9,
     financingAvailable: false,
-    trustTier: 'Community',
+    trustTier: 'COMMUNITY_VERIFIED',
     rating: {
       score: 4.3,
       reviewCount: 15
@@ -226,7 +226,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 61,
     instructorCount: 24,
     financingAvailable: true,
-    trustTier: 'VerifiedFSP',
+    trustTier: 'VERIFIED_FSP',
     rating: {
       score: 4.5,
       reviewCount: 32
@@ -251,7 +251,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 74,
     instructorCount: 7,
     financingAvailable: false,
-    trustTier: 'Unverified',
+    trustTier: 'UNVERIFIED',
     rating: {
       score: 4.0,
       reviewCount: 8
@@ -277,7 +277,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 64,
     instructorCount: 20,
     financingAvailable: true,
-    trustTier: 'Premier',
+    trustTier: 'PREMIER',
     rating: {
       score: 4.8,
       reviewCount: 41
@@ -303,7 +303,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 69,
     instructorCount: 11,
     financingAvailable: true,
-    trustTier: 'Community',
+    trustTier: 'COMMUNITY_VERIFIED',
     rating: {
       score: 4.4,
       reviewCount: 19
@@ -329,7 +329,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 59,
     instructorCount: 32,
     financingAvailable: true,
-    trustTier: 'Premier',
+    trustTier: 'PREMIER',
     rating: {
       score: 4.9,
       reviewCount: 52
@@ -354,7 +354,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 71,
     instructorCount: 8,
     financingAvailable: false,
-    trustTier: 'Community',
+    trustTier: 'COMMUNITY_VERIFIED',
     rating: {
       score: 4.2,
       reviewCount: 11
@@ -380,7 +380,7 @@ export const mockSchools: School[] = [
     estimatedHoursToPPL: 57,
     instructorCount: 26,
     financingAvailable: true,
-    trustTier: 'Premier',
+    trustTier: 'PREMIER',
     rating: {
       score: 4.9,
       reviewCount: 48

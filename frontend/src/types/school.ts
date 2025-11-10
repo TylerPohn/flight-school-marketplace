@@ -1,5 +1,5 @@
 // School type definition for flight school marketplace
-export type TrustTier = 'Premier' | 'VerifiedFSP' | 'Community' | 'Unverified';
+export type TrustTier = 'PREMIER' | 'VERIFIED_FSP' | 'COMMUNITY_VERIFIED' | 'UNVERIFIED';
 export type TrainingType = 'Part141' | 'Part61';
 export type Program = 'PPL' | 'IR' | 'CPL' | 'CFII' | 'ATPL';
 
