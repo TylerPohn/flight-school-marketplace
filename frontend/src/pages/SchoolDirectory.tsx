@@ -5,9 +5,10 @@ import { SchoolCard } from '../components/SchoolCard';
 import { SchoolFiltersComponent } from '../components/SchoolFilters';
 import { useSchoolFilters } from '../hooks/useSchoolFilters';
 import { getAllSchools, convertToSimpleSchool } from '../services/schoolsApi';
+import type { School } from '../types/school';
 
 export const SchoolDirectory: React.FC = () => {
-  const [schools, setSchools] = useState<any[]>([]);
+  const [schools, setSchools] = useState<School[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -311,6 +311,17 @@ npm run build
 # Output in frontend/dist/
 ```
 
+### Troubleshooting
+
+If you encounter any issues during setup or development, please refer to our comprehensive [Troubleshooting Guide](docs/TROUBLESHOOTING.md) which covers:
+
+- Environment setup issues
+- Build and compilation errors
+- AWS and CDK deployment problems
+- API integration issues
+- Database connectivity
+- Performance optimization
+
 ## API Documentation
 
 ### GET /schools
@@ -399,12 +410,30 @@ VITE_API_BASE_URL=https://your-api-gateway-url.amazonaws.com/prod
 - **GSI**: `StateIndex` - partition key: `location.state`
 - **Attributes**: See `DetailedSchool` interface in `/frontend/src/mock/detailedSchools.ts`
 
+## Documentation
+
+- **[Troubleshooting Guide](docs/TROUBLESHOOTING.md)**: Solutions for common issues (environment setup, build errors, AWS issues, API integration)
+- **[Contributing Guidelines](CONTRIBUTING.md)**: How to contribute (PR process, code standards, branch naming)
+- **[Operational Runbook](docs/RUNBOOK.md)**: Deployment procedures, monitoring, maintenance, and incident response
+- **[Implementation Plan](docs/IMPLEMENTATION_PLAN.md)**: Structured plan for bringing the project to production readiness
+- **[Repository Analysis](docs/REPOSITORY_ANALYSIS.md)**: Comprehensive analysis of code quality and production readiness
+
 ## Contributing
 
-1. Create a feature branch
-2. Make your changes
-3. Test thoroughly (matching algorithm, API endpoints, UI)
-4. Submit a pull request
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on:
+
+- Development workflow and setup
+- Code standards and best practices
+- Pull request process
+- Branch naming conventions
+- Commit message guidelines
+
+Quick start:
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature-name`
+3. Make your changes following our [code standards](CONTRIBUTING.md#code-standards)
+4. Test thoroughly (matching algorithm, API endpoints, UI)
+5. Submit a pull request using our [PR template](CONTRIBUTING.md#pr-template)
 
 ## Key Features Implemented
 
@@ -439,9 +468,51 @@ VITE_API_BASE_URL=https://your-api-gateway-url.amazonaws.com/prod
 - Implement ML-based recommendation refinement
 - Add more filters (reviews, part-time options, etc.)
 
+## Screenshots
+
+### Home Directory
+![Home Directory](frontend/screenshots/1-home-directory.png)
+Browse and discover flight schools with an intuitive directory interface featuring filtering, sorting, and detailed school cards with trust tier badges.
+
+### School Profile
+![School Profile](frontend/screenshots/2-school-profile.png)
+Comprehensive school profiles with detailed information including programs, fleet, instructors, reviews, and FSP performance metrics.
+
+### AI-Powered Matching
+![AI Matching](frontend/screenshots/3-ai-matching.png)
+Intelligent matching quiz that helps prospective pilots find the best flight school based on their preferences, budget, location, and training goals.
+
+### School Comparison
+![School Comparison](frontend/screenshots/4-comparison.png)
+Side-by-side comparison tool allowing users to compare up to 3 schools across key metrics including costs, programs, fleet, and verification status.
+
+### Financing Guide
+![Financing Guide](frontend/screenshots/5-financing.png)
+Comprehensive financing information covering federal loans, private loans, VA benefits, payment plans, and other funding options for flight training.
+
 ## License
 
-[Add your license here]
+MIT License
+
+Copyright (c) 2024 Flight School Marketplace
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ## Contact
 

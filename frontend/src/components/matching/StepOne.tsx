@@ -12,10 +12,40 @@ import {
 import { Controller, type UseFormReturn } from 'react-hook-form';
 import type { StepOneFormData } from '../../schemas/matchingSchema';
 
+/**
+ * Props for StepOne component
+ */
 interface StepOneProps {
+  /** React Hook Form instance for managing step one data */
   form: UseFormReturn<StepOneFormData>;
 }
 
+/**
+ * Step One - Training Goals & Programs
+ *
+ * First step of the AI matching questionnaire. Collects information about
+ * the user's aviation training goals and preferences.
+ *
+ * This step captures three key pieces of information:
+ * 1. Training Goal: Which certification they're pursuing (PPL, IR, CPL, ATPL, Other)
+ * 2. Training Type: Preference for Part 141 vs Part 61 training
+ * 3. Aircraft Preference: Optional specific aircraft type interest
+ *
+ * These inputs form the foundation of the matching algorithm, as training goals
+ * and regulatory preferences significantly impact which schools are suitable.
+ *
+ * The component uses react-hook-form with Zod validation to ensure data quality
+ * before allowing progression to the next step.
+ *
+ * @param props - Component props
+ * @param props.form - React Hook Form instance with validation and state management
+ *
+ * @example
+ * const form = useForm<StepOneFormData>({
+ *   resolver: zodResolver(stepOneSchema)
+ * });
+ * <StepOne form={form} />
+ */
 export function StepOne({ form }: StepOneProps) {
   const {
     control,

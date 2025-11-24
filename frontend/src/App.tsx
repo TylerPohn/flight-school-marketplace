@@ -9,6 +9,7 @@ import { ComparisonPage } from './pages/ComparisonPage';
 import { SchoolProfilePage } from './pages/SchoolProfilePage';
 import FinancingCalculatorPage from './pages/FinancingCalculatorPage';
 import { AIMatchingPage } from './pages/AIMatchingPage';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 const darkTheme = createTheme({
   palette: {
@@ -24,24 +25,36 @@ const darkTheme = createTheme({
 
 function App() {
   return (
-    <ThemeProvider theme={darkTheme}>
-      <CssBaseline />
-      <Router>
-        <ComparisonProvider>
-          <Navigation />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/schools" element={<SchoolDirectory />} />
-            <Route path="/compare" element={<ComparisonPage />} />
-            <Route path="/schools/:schoolId" element={<SchoolProfilePage />} />
-            <Route path="/financing-calculator" element={<FinancingCalculatorPage />} />
-            <Route path="/find-my-school" element={<AIMatchingPage />} />
-            <Route path="/find-my-school/results" element={<AIMatchingPage />} />
-          </Routes>
-          <CompareBar />
-        </ComparisonProvider>
-      </Router>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider theme={darkTheme}>
+        <CssBaseline />
+        <Router>
+          <ErrorBoundary isolate>
+            <ComparisonProvider>
+              <ErrorBoundary isolate>
+                <Navigation />
+              </ErrorBoundary>
+
+              <ErrorBoundary>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/schools" element={<SchoolDirectory />} />
+                  <Route path="/compare" element={<ComparisonPage />} />
+                  <Route path="/schools/:schoolId" element={<SchoolProfilePage />} />
+                  <Route path="/financing-calculator" element={<FinancingCalculatorPage />} />
+                  <Route path="/find-my-school" element={<AIMatchingPage />} />
+                  <Route path="/find-my-school/results" element={<AIMatchingPage />} />
+                </Routes>
+              </ErrorBoundary>
+
+              <ErrorBoundary isolate>
+                <CompareBar />
+              </ErrorBoundary>
+            </ComparisonProvider>
+          </ErrorBoundary>
+        </Router>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { MatchProfile, RankedSchool, MockSchool } from '../types/matchProfile';
+import type { MatchProfile, RankedSchool, MockSchool, TrainingGoal, TrainingType, IntensityPreference, TrustTier } from '../types/matchProfile';
 import { rankSchoolsWithAI } from '../utils/mockAIMatching';
 import { MOCK_SCHOOLS } from '../mock/mockSchools';
 import { getAllSchools } from '../services/schoolsApi';
@@ -10,7 +10,7 @@ import type { DetailedSchool } from '../mock/detailedSchools';
  */
 function convertToMockSchool(detailedSchool: DetailedSchool): MockSchool {
   // Extract primary program from programs array (first one) or default to PPL
-  const primaryProgram = (detailedSchool.programs[0] as any) || 'PPL';
+  const primaryProgram = (detailedSchool.programs[0] as TrainingGoal) || 'PPL';
 
   // Get location coordinates
   const lat = detailedSchool.location.coordinates?.lat || 0;
@@ -33,13 +33,26 @@ function convertToMockSchool(detailedSchool: DetailedSchool): MockSchool {
     availability: f.availability,
   }));
 
-  // Map training type
-  const trainingType = detailedSchool.trainingType === 'Both' ? 'No Preference' as any : detailedSchool.trainingType;
+  // Map training type from DetailedSchool format to MatchProfile format
+  const trainingType: TrainingType = detailedSchool.trainingType === 'Both'
+    ? 'No Preference'
+    : detailedSchool.trainingType === 'Part61'
+    ? 'Part61'
+    : 'Part141';
 
   // TODO: Infer intensity level and preferences from school data
   // For now, default to reasonable values
-  const intensityLevel = 'Flexible' as any;
+  const intensityLevel: IntensityPreference = 'Flexible';
   const preferences: string[] = [];
+
+  // Map trust tier from string to TrustTier format expected by MockSchool
+  const trustTier: TrustTier = detailedSchool.trustTier === 'PREMIER'
+    ? 'Verified FSP'
+    : detailedSchool.trustTier === 'VERIFIED_FSP'
+    ? 'Verified FSP'
+    : detailedSchool.trustTier === 'COMMUNITY_VERIFIED'
+    ? 'Community-Verified'
+    : 'Unverified';
 
   return {
     id: detailedSchool.schoolId,
@@ -50,7 +63,7 @@ function convertToMockSchool(detailedSchool: DetailedSchool): MockSchool {
       lat,
       lon: lng,
     },
-    programs: detailedSchool.programs as any[],
+    programs: detailedSchool.programs as TrainingGoal[],
     primaryProgram,
     costBand: detailedSchool.costBand,
     trainingType,
@@ -62,7 +75,7 @@ function convertToMockSchool(detailedSchool: DetailedSchool): MockSchool {
     fleetDetails,
     instructorCount: detailedSchool.instructorCount || 0,
     averageHoursToPPL,
-    trustTier: detailedSchool.trustTier as any,
+    trustTier,
     preferences,
     // Quality metrics for improved scoring
     avgRating: detailedSchool.avgRating,

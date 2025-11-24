@@ -66,7 +66,7 @@ export const useSchoolFilters = (allSchools: School[]) => {
       // If programs are selected, school must have at least one selected program
       if (filters.programTypes.length > 0) {
         const hasSelectedProgram = filters.programTypes.some((program) =>
-          school.programs.includes(program as any)
+          school.programs.includes(program)
         );
         if (!hasSelectedProgram) {
           return false;

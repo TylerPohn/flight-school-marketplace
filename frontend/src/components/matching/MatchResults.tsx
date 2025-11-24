@@ -20,19 +20,61 @@ import {
 } from '@mui/icons-material';
 import type { RankedSchool } from '../../types/matchProfile';
 
+/**
+ * Props for the MatchResults component
+ */
 interface MatchResultsProps {
+  /** Array of schools ranked by match score with AI-generated explanations */
   results: RankedSchool[];
+  /** Optional callback to refine/restart the matching questionnaire */
   onRefine?: () => void;
 }
 
+/**
+ * Match Results Component
+ *
+ * Displays the results of the AI matching algorithm in a ranked list format.
+ * Each school is shown with its match score, explanation, and key details.
+ *
+ * This component is the final step in the matching flow and presents:
+ * - Match scores (0-100%): Calculated based on user preferences
+ * - AI explanations: Why each school is a good match
+ * - School details: Location, cost, fleet, programs, ratings
+ * - Ranking badges: Top 3 matches get special visual treatment
+ * - Action buttons: Learn more, request tour, message school
+ *
+ * The match scores use a color-coded system:
+ * - 90%+: Green (excellent match)
+ * - 80-89%: Blue (very good match)
+ * - 70-79%: Orange (good match)
+ * - <70%: Gray (acceptable match)
+ *
+ * @param props - Component props
+ * @param props.results - Ranked schools array from matching algorithm
+ * @param props.onRefine - Optional callback to restart the matching process
+ *
+ * @example
+ * <MatchResults
+ *   results={rankedSchools}
+ *   onRefine={() => navigate('/find-my-school')}
+ * />
+ */
 export function MatchResults({ results, onRefine }: MatchResultsProps) {
+  /**
+   * Returns color theme based on match score
+   * Higher scores get more vibrant, positive colors
+   */
   const getScoreColor = (score: number): string => {
-    if (score >= 90) return 'success.main';
-    if (score >= 80) return 'info.main';
-    if (score >= 70) return 'warning.main';
-    return 'text.secondary';
+    if (score >= 90) return 'success.main';    // Green - excellent
+    if (score >= 80) return 'info.main';       // Blue - very good
+    if (score >= 70) return 'warning.main';    // Orange - good
+    return 'text.secondary';                    // Gray - acceptable
   };
 
+  /**
+   * Maps trust tier strings to Material-UI color variants
+   * Provides visual hierarchy for school verification levels
+   */
   const getTrustTierColor = (tier: string): 'success' | 'info' | 'default' => {
     if (tier === 'Verified FSP') return 'success';
     if (tier === 'Community-Verified') return 'info';
@@ -123,7 +165,7 @@ export function MatchResults({ results, onRefine }: MatchResultsProps) {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <LocationOn fontSize="small" color="action" />
                           <Typography variant="body2">
-                            {(school as any).location?.city || (school as any).city}, {(school as any).location?.state || (school as any).state}
+                            {school.location.city}, {school.location.state}
                           </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

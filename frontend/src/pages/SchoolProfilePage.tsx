@@ -121,7 +121,7 @@ export function SchoolProfilePage() {
             <Box sx={{ display: 'flex', alignItems: 'center', color: 'white' }}>
               <LocationOn sx={{ mr: 0.5 }} />
               <Typography variant="h6">
-                {(school as any).location?.city || (school as any).city}, {(school as any).location?.state || (school as any).state}
+                {school.location.city}, {school.location.state}
               </Typography>
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

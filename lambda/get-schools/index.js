@@ -1,11 +1,13 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, ScanCommand, QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { createLogger } = require('./logger');
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-exports.handler = async (event) => {
-  console.log('Event:', JSON.stringify(event, null, 2));
+exports.handler = async (event, context) => {
+  const logger = createLogger(context);
+  logger.logEvent(event);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -16,6 +18,7 @@ exports.handler = async (event) => {
 
   // Handle OPTIONS request for CORS
   if (event.httpMethod === 'OPTIONS') {
+    logger.debug('Handling OPTIONS request for CORS');
     return {
       statusCode: 200,
       headers,
@@ -27,6 +30,8 @@ exports.handler = async (event) => {
     const tableName = process.env.TABLE_NAME;
     const queryParams = event.queryStringParameters || {};
 
+    logger.addContext('tableName', tableName);
+
     let command;
     let params = {
       TableName: tableName,
@@ -34,6 +39,7 @@ exports.handler = async (event) => {
 
     // If filtering by state, use the GSI
     if (queryParams.state) {
+      logger.info('Querying schools by state', { state: queryParams.state });
       command = new QueryCommand({
         ...params,
         IndexName: 'StateIndex',
@@ -46,7 +52,7 @@ exports.handler = async (event) => {
         },
       });
     } else {
-      // Otherwise scan the whole table
+      logger.info('Scanning all schools');
       command = new ScanCommand(params);
     }
 
@@ -54,10 +60,17 @@ exports.handler = async (event) => {
 
     // Apply additional filters if needed
     let items = response.Items || [];
+    const initialCount = items.length;
+
+    logger.debug('Retrieved items from DynamoDB', { count: initialCount });
 
     // Filter by training type if specified
     if (queryParams.trainingType && queryParams.trainingType !== 'Both') {
       items = items.filter(school => school.trainingType === queryParams.trainingType);
+      logger.debug('Filtered by training type', {
+        trainingType: queryParams.trainingType,
+        remainingCount: items.length
+      });
     }
 
     // Filter by programs if specified
@@ -66,18 +79,29 @@ exports.handler = async (event) => {
       items = items.filter(school =>
         requestedPrograms.some(program => school.programs?.includes(program))
       );
+      logger.debug('Filtered by programs', {
+        programs: requestedPrograms,
+        remainingCount: items.length
+      });
     }
 
     // Filter by budget if specified
     if (queryParams.maxBudget) {
       const maxBudget = parseInt(queryParams.maxBudget);
       items = items.filter(school => school.costBand?.min <= maxBudget);
+      logger.debug('Filtered by budget', {
+        maxBudget,
+        remainingCount: items.length
+      });
     }
 
     // Sort if specified
     if (queryParams.sortBy) {
       items = sortSchools(items, queryParams.sortBy);
+      logger.debug('Sorted results', { sortBy: queryParams.sortBy });
     }
+
+    logger.logResponse(200, { schoolCount: items.length });
 
     return {
       statusCode: 200,
@@ -88,7 +112,11 @@ exports.handler = async (event) => {
       }),
     };
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Failed to retrieve schools', error, {
+      tableName: process.env.TABLE_NAME,
+      queryParams: event.queryStringParameters
+    });
+
     return {
       statusCode: 500,
       headers,

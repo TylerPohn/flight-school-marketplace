@@ -4,6 +4,7 @@
  */
 
 import type { DetailedSchool } from '../mock/detailedSchools';
+import type { School, TrustTier, TrainingType, Program } from '../types/school';
 
 const API_BASE_URL = import.meta.env.VITE_MATCH_API_URL || '';
 
@@ -109,18 +110,21 @@ function normalizeTrustTier(trustTier: string | undefined): string {
  * Transform DetailedSchool to the simpler School format used in some components
  * This maintains backward compatibility with existing code
  */
-export function convertToSimpleSchool(detailedSchool: any): any {
+export function convertToSimpleSchool(detailedSchool: DetailedSchool): School {
   // Calculate fleet size from fleetDetails
-  const fleetSize = detailedSchool.fleetDetails?.reduce((sum: number, fleet: any) => sum + fleet.count, 0) || 0;
+  const fleetSize = detailedSchool.fleetDetails?.reduce((sum: number, fleet) => sum + fleet.count, 0) || 0;
 
   // Handle both nested location object and flat structure from API
-  const city = detailedSchool.location?.city || detailedSchool.city || '';
-  const state = detailedSchool.location?.state || detailedSchool.state || '';
-  const zipCode = detailedSchool.location?.zipCode || detailedSchool.zipCode || '';
+  const city = detailedSchool.location?.city || '';
+  const state = detailedSchool.location?.state || '';
+  const zipCode = detailedSchool.location?.zipCode || '';
 
   // Get trust tier from either root level or verificationDetails, then normalize
   const rawTrustTier = detailedSchool.trustTier || detailedSchool.verificationDetails?.trustTier;
   const trustTier = normalizeTrustTier(rawTrustTier);
+
+  // Map training type from DetailedSchool to School format
+  const trainingType: TrainingType = detailedSchool.trainingType === 'Both' ? 'Part141' : detailedSchool.trainingType as TrainingType;
 
   return {
     id: detailedSchool.schoolId,
@@ -130,10 +134,10 @@ export function convertToSimpleSchool(detailedSchool: any): any {
       state,
       zip: zipCode
     },
-    programs: detailedSchool.programs || [],
-    trainingType: detailedSchool.trainingType,
+    programs: detailedSchool.programs as Program[],
+    trainingType,
     fleetSize: fleetSize,
-    primaryAircraft: detailedSchool.fleetDetails?.map((f: any) => f.aircraftType) || [],
+    primaryAircraft: detailedSchool.fleetDetails?.map((f) => f.aircraftType) || [],
     costBand: {
       ppl: detailedSchool.costBand?.min || 0,
       ir: detailedSchool.costBand?.min || 0,
@@ -142,7 +146,7 @@ export function convertToSimpleSchool(detailedSchool: any): any {
     estimatedHoursToPPL: detailedSchool.estimatedHoursToPPL || 0,
     instructorCount: detailedSchool.instructorCount || 0,
     financingAvailable: detailedSchool.financingAvailable || false,
-    trustTier: trustTier,
+    trustTier: trustTier as TrustTier,
     rating: {
       score: detailedSchool.avgRating || 0,
       reviewCount: detailedSchool.reviewCount || 0

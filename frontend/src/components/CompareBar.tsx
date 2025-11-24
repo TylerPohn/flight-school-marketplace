@@ -3,14 +3,46 @@ import { Paper, Box, Chip, Button, Typography, Slide } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useComparison } from '../hooks/useComparison';
 
+/**
+ * Compare Bar Component
+ *
+ * A fixed-position bottom bar that displays selected schools and allows
+ * users to navigate to the comparison page. This component provides a
+ * persistent UI element that follows users as they browse schools.
+ *
+ * Features:
+ * - Fixed at bottom of viewport: Always visible while browsing
+ * - Slide animation: Smoothly appears when first school is selected
+ * - School chips: Display selected school names with remove buttons
+ * - Count indicator: Shows "X/4" progress toward maximum selections
+ * - Compare button: Navigates to comparison page (requires minimum 2 schools)
+ * - Auto-hide: Disappears when no schools are selected
+ *
+ * The bar is hidden (returns null) when count is 0, and uses Material-UI's
+ * Slide component for smooth enter/exit animations.
+ *
+ * @returns {JSX.Element | null} The compare bar or null if no schools selected
+ *
+ * @example
+ * // Add to app layout
+ * <AppLayout>
+ *   <Routes>...</Routes>
+ *   <CompareBar />
+ * </AppLayout>
+ */
 export const CompareBar: React.FC = () => {
   const { selectedSchools, removeSchool, count } = useComparison();
   const navigate = useNavigate();
 
+  // Hide bar when no schools are selected
   if (count === 0) {
     return null;
   }
 
+  /**
+   * Navigate to comparison page with selected school IDs in URL
+   * The school IDs are passed as comma-separated query parameter
+   */
   const handleCompareClick = () => {
     const schoolIds = selectedSchools.map(s => s.id).join(',');
     navigate(`/compare?schools=${schoolIds}`);

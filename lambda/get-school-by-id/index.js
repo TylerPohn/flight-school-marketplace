@@ -1,11 +1,13 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, GetCommand } = require('@aws-sdk/lib-dynamodb');
+const { createLogger } = require('./logger');
 
 const client = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(client);
 
-exports.handler = async (event) => {
-  console.log('Event:', JSON.stringify(event, null, 2));
+exports.handler = async (event, context) => {
+  const logger = createLogger(context);
+  logger.logEvent(event);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -16,6 +18,7 @@ exports.handler = async (event) => {
 
   // Handle OPTIONS request for CORS
   if (event.httpMethod === 'OPTIONS') {
+    logger.debug('Handling OPTIONS request for CORS');
     return {
       statusCode: 200,
       headers,
@@ -25,8 +28,15 @@ exports.handler = async (event) => {
 
   try {
     const schoolId = event.pathParameters?.schoolId;
+    const tableName = process.env.TABLE_NAME;
+
+    logger.addContextBatch({
+      tableName,
+      schoolId
+    });
 
     if (!schoolId) {
+      logger.warn('Missing schoolId parameter in request');
       return {
         statusCode: 400,
         headers,
@@ -36,8 +46,10 @@ exports.handler = async (event) => {
       };
     }
 
+    logger.info('Fetching school from DynamoDB', { schoolId });
+
     const command = new GetCommand({
-      TableName: process.env.TABLE_NAME,
+      TableName: tableName,
       Key: {
         schoolId,
       },
@@ -46,6 +58,7 @@ exports.handler = async (event) => {
     const response = await docClient.send(command);
 
     if (!response.Item) {
+      logger.warn('School not found', { schoolId });
       return {
         statusCode: 404,
         headers,
@@ -55,13 +68,19 @@ exports.handler = async (event) => {
       };
     }
 
+    logger.logResponse(200, { schoolId, schoolName: response.Item.name });
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify(response.Item),
     };
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Failed to retrieve school', error, {
+      tableName: process.env.TABLE_NAME,
+      schoolId: event.pathParameters?.schoolId
+    });
+
     return {
       statusCode: 500,
       headers,

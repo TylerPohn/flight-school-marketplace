@@ -111,7 +111,7 @@ export const ComparisonPage: React.FC = () => {
   const comparisonRows: ComparisonRow[] = [
     {
       label: 'Location',
-      getValue: (school) => `${(school as any).location?.city || (school as any).city}, ${(school as any).location?.state || (school as any).state}`,
+      getValue: (school) => `${school.location.city}, ${school.location.state}`,
     },
     {
       label: 'Trust Tier',

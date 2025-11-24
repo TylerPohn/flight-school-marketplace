@@ -22,3 +22,9 @@ lambda/*.zip
 lambda/*/package
 lambda/*/package-lock.json
 lambda/*/scripts/package-lock.json
+
+# CDK output
+cdk/cdk.out/
+
+# Build artifacts
+frontend/dist/

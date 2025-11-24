@@ -96,7 +96,7 @@ export const TrustBadge: React.FC<TrustBadgeProps> = ({
   // Create the badge element
   const badge = (
     <Chip
-      icon={IconComponent ? <IconComponent {...({ sx: { fontSize: 'inherit', color: `${config.textColor} !important` } } as any)} /> : undefined}
+      icon={IconComponent ? <IconComponent sx={{ fontSize: 'inherit', color: `${config.textColor} !important` }} /> : undefined}
       label={config.label}
       onClick={onClick}
       className={className}

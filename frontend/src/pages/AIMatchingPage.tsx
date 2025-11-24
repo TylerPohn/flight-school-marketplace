@@ -31,6 +31,10 @@ import { StepThree } from '../components/matching/StepThree';
 import { StepFour } from '../components/matching/StepFour';
 import { MatchResults } from '../components/matching/MatchResults';
 
+/**
+ * Configuration for the multi-step matching wizard
+ * Each step corresponds to a different aspect of user preferences
+ */
 const steps = [
   { label: 'Goals', icon: TrackChanges },
   { label: 'Budget', icon: AttachMoney },
@@ -38,16 +42,39 @@ const steps = [
   { label: 'Preferences', icon: Star },
 ];
 
+/**
+ * AI Matching Page - Multi-step wizard for matching users with flight schools
+ *
+ * This component implements a 4-step questionnaire that collects user preferences
+ * and uses a deterministic matching algorithm to rank flight schools. The matching
+ * flow includes:
+ *
+ * 1. Training Goals (Step 1): Certification level, training type preference, aircraft preference
+ * 2. Budget (Step 2): Maximum budget, financing interest, military benefits eligibility
+ * 3. Location (Step 3): Preferred location, search radius, housing needs
+ * 4. Preferences (Step 4): Training intensity, additional preferences, prior experience
+ *
+ * After submission, the system:
+ * - Displays an animated loading screen (minimum 4 seconds)
+ * - Calculates match scores based on weighted preferences
+ * - Generates AI explanations for each match
+ * - Displays ranked results with detailed school information
+ *
+ * @returns {JSX.Element} The AI matching page with stepper, forms, and results
+ */
 export function AIMatchingPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { currentStep, formData, results, nextStep, prevStep, updateFormData, submitQuestionnaire, reset } = useMatchingWizard();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check if we're on the results page
+  // Check if we're on the results page by examining both the URL and results state
+  // This dual check ensures we only show results when they exist AND the URL is correct
   const showResults = location.pathname.includes('/results') && results;
 
-  // Initialize forms for each step
+  // Initialize separate form controllers for each step
+  // Each form maintains its own state and validation, allowing users to
+  // navigate back/forward while preserving their answers
   const stepOneForm = useForm<StepOneFormData>({
     resolver: zodResolver(stepOneSchema),
     defaultValues: {
@@ -84,11 +111,23 @@ export function AIMatchingPage() {
     },
   });
 
+  /**
+   * Handles navigation to the next step in the wizard
+   *
+   * This function validates the current step's form data before proceeding.
+   * The validation is step-specific, using react-hook-form's trigger method
+   * to validate against the appropriate Zod schema. Only valid data is saved
+   * to the wizard's global state before advancing to the next step.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   const handleNext = async () => {
     let isValid = false;
     let stepData: Partial<MatchProfile> = {};
 
-    // Validate current step
+    // Validate current step using the appropriate form controller
+    // Each step has its own schema and form instance for independent validation
     switch (currentStep) {
       case 0:
         isValid = await stepOneForm.trigger();
@@ -116,6 +155,7 @@ export function AIMatchingPage() {
         break;
     }
 
+    // Only proceed if validation passed - this prevents incomplete data from entering the system
     if (isValid) {
       updateFormData(stepData);
       nextStep();
@@ -126,13 +166,33 @@ export function AIMatchingPage() {
     prevStep();
   };
 
+  /**
+   * Handles final submission of the complete questionnaire
+   *
+   * This function orchestrates the matching flow:
+   * 1. Validates the final step's form data
+   * 2. Combines all 4 steps' data into a complete MatchProfile
+   * 3. Submits to the matching algorithm which:
+   *    - Calculates match scores based on weighted criteria
+   *    - Generates AI explanations for each match
+   *    - Ranks schools by compatibility
+   * 4. Shows an animated loading screen for minimum 4 seconds (UX consideration)
+   * 5. Navigates to results page with ranked school matches
+   *
+   * The 4-second minimum ensures users perceive the matching as a sophisticated
+   * process, preventing it from feeling instantaneous and therefore less credible.
+   *
+   * @async
+   * @returns {Promise<void>}
+   */
   const handleSubmit = async () => {
     const isValid = await stepFourForm.trigger();
     if (!isValid) return;
 
     setIsSubmitting(true);
 
-    // Combine all form data
+    // Combine all form data from all four steps into a single MatchProfile object
+    // This creates the complete user preference profile for matching
     const finalData: MatchProfile = {
       ...formData,
       ...stepOneForm.getValues(),
@@ -141,10 +201,13 @@ export function AIMatchingPage() {
       ...stepFourForm.getValues(),
     } as MatchProfile;
 
-    // Submit questionnaire (async - fetches AI explanations)
+    // Submit questionnaire to the matching algorithm
+    // This is async and fetches AI-generated explanations for each match
     await submitQuestionnaire(finalData);
 
-    // Navigate to results page after AI matching animation (minimum 4 seconds)
+    // Navigate to results page after AI matching animation
+    // Minimum 4 seconds provides time for the loading animation and creates
+    // perception of thorough analysis (UX best practice for credibility)
     setTimeout(() => {
       setIsSubmitting(false);
       navigate('/find-my-school/results');
@@ -156,7 +219,10 @@ export function AIMatchingPage() {
     reset();
   };
 
-  // Show AI matching animation while submitting
+  // Show animated loading screen during submission
+  // This provides visual feedback and creates anticipation for results
+  // The animation includes rotating rings, pulsing background effects,
+  // and staged progress indicators for a polished UX
   if (isSubmitting) {
     return (
       <Box
@@ -351,7 +417,15 @@ export function AIMatchingPage() {
     return <MatchResults results={results} onRefine={handleRefine} />;
   }
 
-  // Get current form
+  /**
+   * Returns the appropriate form component for the current step
+   *
+   * This function acts as a router for the wizard, rendering the correct
+   * step component based on the currentStep index. Each step component
+   * receives its corresponding form controller as a prop.
+   *
+   * @returns {JSX.Element | null} The step component or null for invalid steps
+   */
   const getCurrentForm = () => {
     switch (currentStep) {
       case 0:

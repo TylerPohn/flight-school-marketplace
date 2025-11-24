@@ -351,7 +351,7 @@ export const LoanCalculator: React.FC<LoanCalculatorProps> = ({
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={(entry: any) =>
+                          label={(entry: { name: string; percent?: number }) =>
                             `${entry.name}: ${((entry.percent || 0) * 100).toFixed(0)}%`
                           }
                           outerRadius={80}

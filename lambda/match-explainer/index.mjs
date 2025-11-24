@@ -1,9 +1,11 @@
 import { BedrockRuntimeClient, InvokeModelCommand } from '@aws-sdk/client-bedrock-runtime';
+import { createLogger } from './logger.mjs';
 
 const bedrock = new BedrockRuntimeClient({ region: 'us-east-1' });
 
-export const handler = async (event) => {
-  console.log('Received event:', JSON.stringify(event, null, 2));
+export const handler = async (event, context) => {
+  const logger = createLogger(context);
+  logger.logEvent(event);
 
   try {
     // Parse request body
@@ -12,6 +14,11 @@ export const handler = async (event) => {
 
     // Validate input
     if (!student || !school || matchScore === undefined) {
+      logger.warn('Missing required fields in request body', {
+        hasStudent: !!student,
+        hasSchool: !!school,
+        hasMatchScore: matchScore !== undefined
+      });
       return {
         statusCode: 400,
         headers: corsHeaders(),
@@ -21,11 +28,29 @@ export const handler = async (event) => {
       };
     }
 
+    logger.addContextBatch({
+      schoolId: school.schoolId,
+      schoolName: school.name,
+      matchScore,
+      studentGoal: student.trainingGoal
+    });
+
+    logger.info('Building match explanation prompt', {
+      matchScore,
+      studentBudget: student.maxBudget,
+      schoolCostMin: school.costBand?.min
+    });
+
     // Build prompt
     const prompt = buildPrompt(student, school, matchScore);
-    console.log('Generated prompt');
+    logger.debug('Generated prompt for Bedrock', { promptLength: prompt.length });
 
     // Call Bedrock
+    logger.info('Invoking Bedrock model', {
+      modelId: 'anthropic.claude-3-5-sonnet-20240620-v1:0',
+      maxTokens: 250
+    });
+
     const command = new InvokeModelCommand({
       modelId: 'anthropic.claude-3-5-sonnet-20240620-v1:0',
       contentType: 'application/json',
@@ -41,11 +66,24 @@ export const handler = async (event) => {
       })
     });
 
+    const startTime = Date.now();
     const response = await bedrock.send(command);
+    const bedrockLatency = Date.now() - startTime;
+
     const result = JSON.parse(new TextDecoder().decode(response.body));
     const explanation = result.content[0].text;
 
-    console.log('Generated explanation:', explanation);
+    logger.info('Successfully generated explanation', {
+      explanationLength: explanation.length,
+      bedrockLatencyMs: bedrockLatency,
+      inputTokens: result.usage?.input_tokens,
+      outputTokens: result.usage?.output_tokens
+    });
+
+    logger.logResponse(200, {
+      cached: false,
+      latencyMs: bedrockLatency
+    });
 
     return {
       statusCode: 200,
@@ -57,7 +95,10 @@ export const handler = async (event) => {
     };
 
   } catch (error) {
-    console.error('Error:', error);
+    logger.error('Failed to generate explanation', error, {
+      errorType: error.name,
+      bedrockRegion: 'us-east-1'
+    });
 
     return {
       statusCode: 500,
